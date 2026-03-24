@@ -178,6 +178,7 @@ def fetch_census_acs(conn):
         print('  SKIP Census (no key)')
         return
 
+    import subprocess
     variables = 'NAME,B19013_001E,B25077_001E,B25064_001E,B19301_001E'
     url = (
         f'{CENSUS_API}?get={variables}'
@@ -187,7 +188,9 @@ def fetch_census_acs(conn):
 
     print('  Fetching Census ACS data...')
     try:
-        result = api_get(url)
+        # Use curl because Python urllib sometimes gets empty response from Census
+        raw = subprocess.check_output(['curl', '-s', url], timeout=120)
+        result = json.loads(raw)
         headers = result[0]
         rows = result[1:]
 
