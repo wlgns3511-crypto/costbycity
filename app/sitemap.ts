@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Top comparison pages
-  const comparisons = getTopComparisons(5000);
+  const comparisons = getTopComparisons(2000);
   const comparePages: MetadataRoute.Sitemap = comparisons.map((p) => {
     const [a, b] = [p.slugA, p.slugB].sort();
     return {
