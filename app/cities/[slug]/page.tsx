@@ -1,0 +1,143 @@
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { getCityData, getAllMetros, getAllCitiesWithRPP } from "@/lib/db";
+import { formatDollar, formatPctDiff, formatIndex } from "@/lib/format";
+import { CostBreakdown } from "@/components/CostIndex";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { FAQ } from "@/components/FAQ";
+import { breadcrumbSchema, faqSchema, generateCityFAQs } from "@/lib/schema";
+
+interface Props {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  return getAllMetros().map((m) => ({ slug: m.slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const data = getCityData(slug);
+  if (!data) return {};
+  const diff = formatPctDiff(data.rpp.all || 100);
+  return {
+    title: `Cost of Living in ${data.metro.short_name} (${data.year})`,
+    description: `Cost of living in ${data.metro.short_name} is ${diff} the national average. See housing, goods, utilities breakdown and compare with other cities.`,
+    alternates: { canonical: `/cities/${slug}` },
+  };
+}
+
+export default async function CityPage({ params }: Props) {
+  const { slug } = await params;
+  const data = getCityData(slug);
+  if (!data) notFound();
+
+  const { metro, rpp, acs, year } = data;
+  const allCities = getAllCitiesWithRPP();
+  const faqs = generateCityFAQs(metro.short_name, rpp, acs);
+
+  const breadcrumbs = [
+    { name: "Home", url: "/" },
+    { name: "Cities", url: "/cities" },
+    { name: metro.short_name, url: `/cities/${slug}` },
+  ];
+
+  // Find nearby RPP cities for comparison suggestions
+  const rppAll = rpp.all || 100;
+  const compareCities = allCities
+    .filter((c) => c.fips !== metro.fips)
+    .sort((a, b) => Math.abs(a.rpp_all - rppAll) - Math.abs(b.rpp_all - rppAll))
+    .slice(0, 10);
+
+  return (
+    <div>
+      <Breadcrumb items={breadcrumbs.map((b) => ({ label: b.name, href: b.url }))} />
+
+      <h1 className="text-3xl font-bold mb-2">Cost of Living in {metro.short_name}</h1>
+      <p className="text-slate-500 mb-6">{year} data from the Bureau of Economic Analysis</p>
+
+      {/* Hero stat */}
+      <div className="bg-emerald-50 rounded-lg p-6 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div>
+            <div className="text-sm text-slate-500">Cost Index</div>
+            <div className={`text-2xl font-bold ${rppAll > 100 ? 'text-red-600' : 'text-green-600'}`}>
+              {formatIndex(rppAll)}
+            </div>
+            <div className="text-xs text-slate-400">{formatPctDiff(rppAll)} avg</div>
+          </div>
+          <div>
+            <div className="text-sm text-slate-500">Housing Index</div>
+            <div className="text-2xl font-bold">{rpp.housing ? formatIndex(rpp.housing) : 'N/A'}</div>
+          </div>
+          {acs?.median_income && (
+            <div>
+              <div className="text-sm text-slate-500">Median Income</div>
+              <div className="text-2xl font-bold">{formatDollar(acs.median_income)}</div>
+            </div>
+          )}
+          {acs?.median_rent && (
+            <div>
+              <div className="text-sm text-slate-500">Median Rent</div>
+              <div className="text-2xl font-bold">{formatDollar(acs.median_rent)}/mo</div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <h2 className="text-xl font-bold mb-3">Cost Breakdown</h2>
+      <CostBreakdown rpp={rpp} />
+
+      {acs && (
+        <section className="mt-8">
+          <h2 className="text-xl font-bold mb-3">Income & Housing</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {acs.median_income && (
+              <div className="border border-slate-200 rounded-lg p-4">
+                <div className="text-sm text-slate-500">Median Household Income</div>
+                <div className="text-xl font-bold">{formatDollar(acs.median_income)}/year</div>
+              </div>
+            )}
+            {acs.median_home_value && (
+              <div className="border border-slate-200 rounded-lg p-4">
+                <div className="text-sm text-slate-500">Median Home Value</div>
+                <div className="text-xl font-bold">{formatDollar(acs.median_home_value)}</div>
+              </div>
+            )}
+            {acs.median_rent && (
+              <div className="border border-slate-200 rounded-lg p-4">
+                <div className="text-sm text-slate-500">Median Monthly Rent</div>
+                <div className="text-xl font-bold">{formatDollar(acs.median_rent)}/mo</div>
+              </div>
+            )}
+            {acs.per_capita_income && (
+              <div className="border border-slate-200 rounded-lg p-4">
+                <div className="text-sm text-slate-500">Per Capita Income</div>
+                <div className="text-xl font-bold">{formatDollar(acs.per_capita_income)}/year</div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <section className="mt-8">
+        <h2 className="text-xl font-bold mb-3">Compare {metro.short_name} With</h2>
+        <div className="grid sm:grid-cols-2 gap-2 text-sm">
+          {compareCities.map((c) => {
+            const [a, b] = [slug, c.slug].sort();
+            return (
+              <a key={c.fips} href={`/compare/${a}-vs-${b}`} className="text-emerald-600 hover:underline p-2 border border-slate-100 rounded">
+                {metro.short_name} vs {c.short_name}
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      <FAQ items={faqs} />
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema(breadcrumbs)) }} />
+      {faqs.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(faqs)) }} />}
+    </div>
+  );
+}
