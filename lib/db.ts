@@ -125,7 +125,7 @@ export function getAllCitiesWithRPP(): (Metro & { rpp_all: number })[] {
 
 // --- Comparison ---
 
-export function getTopComparisons(limit = 500): { slugA: string; slugB: string }[] {
+export function getTopComparisons(limit = 5000): { slugA: string; slugB: string }[] {
   // Generate comparison pairs from top metros by RPP difference (most interesting)
   return getDb().prepare(`
     SELECT a_m.slug as slugA, b_m.slug as slugB
