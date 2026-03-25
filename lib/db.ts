@@ -155,3 +155,40 @@ export function getMetrosByState(): Record<string, Metro[]> {
   }
   return groups;
 }
+
+export function getAllStates(): string[] {
+  return (getDb().prepare('SELECT DISTINCT state FROM metros WHERE state IS NOT NULL AND state != \'\' ORDER BY state').all() as { state: string }[]).map(r => r.state);
+}
+
+export function getMetrosByStateCode(state: string): (Metro & { rpp_all: number })[] {
+  return getDb().prepare(`
+    SELECT m.*, r.value as rpp_all FROM metros m
+    JOIN rpp r ON m.fips = r.fips
+    WHERE m.state = ? AND r.category = 'all' AND r.year = (SELECT MAX(year) FROM rpp)
+    ORDER BY r.value DESC
+  `).all(state) as (Metro & { rpp_all: number })[];
+}
+
+export function getRPPHistory(fips: string): { year: number; value: number }[] {
+  return getDb().prepare(`
+    SELECT year, value FROM rpp WHERE fips = ? AND category = 'all' ORDER BY year
+  `).all(fips) as { year: number; value: number }[];
+}
+
+export function getCheapestHousing(limit = 20): (Metro & { housing: number })[] {
+  return getDb().prepare(`
+    SELECT m.*, r.value as housing FROM metros m
+    JOIN rpp r ON m.fips = r.fips
+    WHERE r.category = 'housing' AND r.year = (SELECT MAX(year) FROM rpp)
+    ORDER BY r.value ASC LIMIT ?
+  `).all(limit) as (Metro & { housing: number })[];
+}
+
+export function getMostExpensiveHousing(limit = 20): (Metro & { housing: number })[] {
+  return getDb().prepare(`
+    SELECT m.*, r.value as housing FROM metros m
+    JOIN rpp r ON m.fips = r.fips
+    WHERE r.category = 'housing' AND r.year = (SELECT MAX(year) FROM rpp)
+    ORDER BY r.value DESC LIMIT ?
+  `).all(limit) as (Metro & { housing: number })[];
+}

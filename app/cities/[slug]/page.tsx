@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCityData, getAllMetros, getAllCitiesWithRPP } from "@/lib/db";
+import { getCityData, getAllMetros, getAllCitiesWithRPP, getRPPHistory } from "@/lib/db";
 import { formatDollar, formatPctDiff, formatIndex } from "@/lib/format";
 import { CostBreakdown } from "@/components/CostIndex";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -34,6 +34,7 @@ export default async function CityPage({ params }: Props) {
 
   const { metro, rpp, acs, year } = data;
   const allCities = getAllCitiesWithRPP();
+  const history = getRPPHistory(metro.fips);
   const faqs = generateCityFAQs(metro.short_name, rpp, acs);
 
   const breadcrumbs = [
@@ -87,6 +88,29 @@ export default async function CityPage({ params }: Props) {
 
       <h2 className="text-xl font-bold mb-3">Cost Breakdown</h2>
       <CostBreakdown rpp={rpp} />
+
+      {history.length > 1 && (
+        <section className="mt-8">
+          <h2 className="text-xl font-bold mb-3">Cost of Living Trend</h2>
+          <div className="space-y-1">
+            {history.map((h) => {
+              const maxVal = Math.max(...history.map(x => x.value));
+              const minVal = Math.min(...history.map(x => x.value));
+              const range = maxVal - minVal || 1;
+              const width = ((h.value - minVal) / range) * 80 + 20;
+              return (
+                <div key={h.year} className="flex items-center gap-2">
+                  <span className="text-xs text-slate-500 w-10">{h.year}</span>
+                  <div className="flex-1 h-5 bg-slate-100 rounded overflow-hidden">
+                    <div className={`h-full rounded ${h.value > 100 ? 'bg-red-300' : 'bg-green-300'}`} style={{ width: `${width}%` }} />
+                  </div>
+                  <span className="text-xs text-slate-500 w-12 text-right">{formatIndex(h.value)}</span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {acs && (
         <section className="mt-8">
