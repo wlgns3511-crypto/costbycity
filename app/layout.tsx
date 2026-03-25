@@ -45,6 +45,13 @@ export default function RootLayout({
         <footer className="border-t border-slate-200 mt-16">
           <div className="max-w-5xl mx-auto px-4 py-6 text-sm text-slate-500">
             <p>Data from the Bureau of Economic Analysis (BEA) Regional Price Parities and U.S. Census Bureau.</p>
+            <p className="mt-2">
+              <a href="/about" className="hover:text-emerald-600">About</a>
+              {" | "}
+              <a href="/privacy" className="hover:text-emerald-600">Privacy</a>
+              {" | "}
+              <a href="/contact" className="hover:text-emerald-600">Contact</a>
+            </p>
             <p className="mt-1">&copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.</p>
           </div>
         </footer>
