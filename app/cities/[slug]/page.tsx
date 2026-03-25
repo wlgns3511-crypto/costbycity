@@ -120,6 +120,14 @@ export default async function CityPage({ params }: Props) {
         </section>
       )}
 
+      <section className="mt-8 p-4 bg-slate-50 rounded-lg">
+        <h2 className="text-lg font-bold mb-2">Explore More About {metro.short_name}</h2>
+        <div className="flex flex-wrap gap-3 text-sm">
+          <a href={`https://salarybycity.com/locations/${slug}/`} className="text-blue-600 hover:underline" target="_blank" rel="noopener">Salaries in {metro.short_name}</a>
+          <a href={`https://guidebycity.com/city/${slug}/`} className="text-teal-600 hover:underline" target="_blank" rel="noopener">City Guide: {metro.short_name}</a>
+        </div>
+      </section>
+
       <section className="mt-8">
         <h2 className="text-xl font-bold mb-3">Compare {metro.short_name} With</h2>
         <div className="grid sm:grid-cols-2 gap-2 text-sm">
