@@ -7,6 +7,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { FAQ } from "@/components/FAQ";
 import { breadcrumbSchema, faqSchema, generateCityFAQs } from "@/lib/schema";
 import { analyzeCost } from "@/lib/cost-analysis";
+import { getCrossRefInsights } from '@/lib/crossref';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -34,6 +35,7 @@ export default async function CityPage({ params }: Props) {
   if (!data) notFound();
 
   const { metro, rpp, acs, year } = data;
+  const crossInsights = getCrossRefInsights(slug, 'cost');
   const allCities = getAllCitiesWithRPP();
   const history = getRPPHistory(metro.fips);
   const analysis = analyzeCost(metro.short_name, rpp, acs ?? null, history);
@@ -199,6 +201,19 @@ export default async function CityPage({ params }: Props) {
                 <div className="text-xl font-bold">{formatDollar(acs.per_capita_income)}/year</div>
               </div>
             )}
+          </div>
+        </section>
+      )}
+
+      {crossInsights.length > 0 && (
+        <section className="mt-8 mb-6">
+          <h2 className="text-xl font-bold mb-3">Related Data Insights</h2>
+          <div className="space-y-2">
+            {crossInsights.map((insight, i) => (
+              <div key={i} className="p-3 bg-slate-50 border-l-4 border-slate-300 rounded-r-lg">
+                <p className="text-sm text-slate-700" dangerouslySetInnerHTML={{ __html: insight }} />
+              </div>
+            ))}
           </div>
         </section>
       )}
