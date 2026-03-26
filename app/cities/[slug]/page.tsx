@@ -6,6 +6,7 @@ import { CostBreakdown } from "@/components/CostIndex";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { FAQ } from "@/components/FAQ";
 import { breadcrumbSchema, faqSchema, generateCityFAQs } from "@/lib/schema";
+import { analyzeCost } from "@/lib/cost-analysis";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -35,7 +36,14 @@ export default async function CityPage({ params }: Props) {
   const { metro, rpp, acs, year } = data;
   const allCities = getAllCitiesWithRPP();
   const history = getRPPHistory(metro.fips);
-  const faqs = generateCityFAQs(metro.short_name, rpp, acs);
+  const analysis = analyzeCost(metro.short_name, rpp, acs ?? null, history);
+  const baseFaqs = generateCityFAQs(metro.short_name, rpp, acs);
+  const faqs = [
+    ...baseFaqs,
+    { question: `Is ${metro.short_name} affordable to live in?`, answer: analysis.affordabilityVerdict || analysis.summary },
+    ...(analysis.salaryNeeded ? [{ question: `What salary do you need to live in ${metro.short_name}?`, answer: analysis.salaryNeeded }] : []),
+    ...(analysis.trendNote ? [{ question: `Is ${metro.short_name} getting more expensive?`, answer: analysis.trendNote }] : []),
+  ];
 
   const breadcrumbs = [
     { name: "Home", url: "/" },
@@ -85,6 +93,57 @@ export default async function CityPage({ params }: Props) {
           )}
         </div>
       </div>
+
+      {/* Area Overview */}
+      <section className="mb-6">
+        <h2 className="text-xl font-bold mb-3">Overview</h2>
+        <div className="bg-emerald-50 border-l-4 border-emerald-400 p-4 rounded-r-lg">
+          <p className="text-slate-700 text-sm">{analysis.summary}</p>
+        </div>
+      </section>
+
+      {(analysis.highlights.length > 0 || analysis.concerns.length > 0) && (
+        <div className="grid md:grid-cols-2 gap-4 mb-6">
+          {analysis.highlights.length > 0 && (
+            <div className="bg-green-50 rounded-lg p-4">
+              <h3 className="font-semibold text-green-700 mb-2">Advantages</h3>
+              <ul className="space-y-1">
+                {analysis.highlights.map((h, i) => (
+                  <li key={i} className="text-sm text-slate-700 flex items-start gap-2">
+                    <span className="text-green-500 mt-0.5">✓</span> {h}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {analysis.concerns.length > 0 && (
+            <div className="bg-amber-50 rounded-lg p-4">
+              <h3 className="font-semibold text-amber-700 mb-2">Watch Out For</h3>
+              <ul className="space-y-1">
+                {analysis.concerns.map((c, i) => (
+                  <li key={i} className="text-sm text-slate-700 flex items-start gap-2">
+                    <span className="text-amber-500 mt-0.5">!</span> {c}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
+      {analysis.budgetTips.length > 0 && (
+        <section className="mb-6">
+          <h2 className="text-xl font-bold mb-3">Budget Tips for {metro.short_name}</h2>
+          <div className="space-y-2">
+            {analysis.budgetTips.map((tip, i) => (
+              <div key={i} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                <span className="text-blue-500 text-sm mt-0.5">💡</span>
+                <p className="text-slate-700 text-sm">{tip}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <h2 className="text-xl font-bold mb-3">Cost Breakdown</h2>
       <CostBreakdown rpp={rpp} />
