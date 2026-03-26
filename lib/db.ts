@@ -192,3 +192,7 @@ export function getMostExpensiveHousing(limit = 20): (Metro & { housing: number 
     ORDER BY r.value DESC LIMIT ?
   `).all(limit) as (Metro & { housing: number })[];
 }
+
+export function getPopularMetros(limit = 10): Metro[] {
+  return getDb().prepare('SELECT * FROM metros ORDER BY ROWID LIMIT ?').all(limit) as Metro[];
+}
