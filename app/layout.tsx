@@ -50,6 +50,8 @@ export default function RootLayout({
               {" | "}
               <a href="/privacy" className="hover:text-emerald-600">Privacy</a>
               {" | "}
+              <a href="/terms" className="hover:text-emerald-600">Terms</a>
+              {" | "}
               <a href="/contact" className="hover:text-emerald-600">Contact</a>
             </p>
             <p className="mt-1">&copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.</p>
