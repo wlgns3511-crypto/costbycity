@@ -218,6 +218,14 @@ export default async function CityPage({ params }: Props) {
         </section>
       )}
 
+      <section className="mt-8 p-6 bg-emerald-50 rounded-xl border border-emerald-100">
+        <h3 className="text-lg font-semibold text-emerald-900 mb-3">Moving to {metro.short_name}?</h3>
+        <p className="text-emerald-800 text-sm leading-relaxed">
+          Find affordable health insurance plans, compare renters insurance quotes, and estimate your mortgage payments before relocating.{" "}
+          Check <a href={`https://salarybycity.com/locations/${slug}`} className="underline font-medium">salary data for {metro.short_name}</a> to see how your income compares to the local cost of living.
+        </p>
+      </section>
+
       <section className="mt-8 p-4 bg-slate-50 rounded-lg">
         <h2 className="text-lg font-bold mb-2">Explore More About {metro.short_name}</h2>
         <div className="flex flex-wrap gap-3 text-sm">
