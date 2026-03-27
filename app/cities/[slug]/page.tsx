@@ -9,6 +9,7 @@ import { breadcrumbSchema, faqSchema, generateCityFAQs } from "@/lib/schema";
 import { analyzeCost } from "@/lib/cost-analysis";
 import { getCrossRefInsights } from '@/lib/crossref';
 import { DataFeedback } from "@/components/DataFeedback";
+import { EmbedButton } from "@/components/EmbedButton";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -219,7 +220,9 @@ export default async function CityPage({ params }: Props) {
         </section>
       )}
 
-      <DataFeedback />
+      <EmbedButton url="https://costbycity.com" title="Data from CostByCity" site="CostByCity" siteUrl="https://costbycity.com" />
+
+          <DataFeedback />
 
           <section className="mt-8 p-6 bg-emerald-50 rounded-xl border border-emerald-100">
         <h3 className="text-lg font-semibold text-emerald-900 mb-3">Moving to {metro.short_name}?</h3>
