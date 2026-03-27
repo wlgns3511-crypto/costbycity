@@ -8,6 +8,7 @@ import { FAQ } from "@/components/FAQ";
 import { breadcrumbSchema, faqSchema, generateCityFAQs } from "@/lib/schema";
 import { analyzeCost } from "@/lib/cost-analysis";
 import { getCrossRefInsights } from '@/lib/crossref';
+import { DataFeedback } from "@/components/DataFeedback";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -218,7 +219,9 @@ export default async function CityPage({ params }: Props) {
         </section>
       )}
 
-      <section className="mt-8 p-6 bg-emerald-50 rounded-xl border border-emerald-100">
+      <DataFeedback />
+
+          <section className="mt-8 p-6 bg-emerald-50 rounded-xl border border-emerald-100">
         <h3 className="text-lg font-semibold text-emerald-900 mb-3">Moving to {metro.short_name}?</h3>
         <p className="text-emerald-800 text-sm leading-relaxed">
           Find affordable health insurance plans, compare renters insurance quotes, and estimate your mortgage payments before relocating.{" "}
