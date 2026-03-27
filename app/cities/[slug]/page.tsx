@@ -10,6 +10,7 @@ import { analyzeCost } from "@/lib/cost-analysis";
 import { getCrossRefInsights } from '@/lib/crossref';
 import { DataFeedback } from "@/components/DataFeedback";
 import { EmbedButton } from "@/components/EmbedButton";
+import { FreshnessTag } from "@/components/FreshnessTag";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -220,7 +221,9 @@ export default async function CityPage({ params }: Props) {
         </section>
       )}
 
-      <EmbedButton url="https://costbycity.com" title="Data from CostByCity" site="CostByCity" siteUrl="https://costbycity.com" />
+      <FreshnessTag source="Bureau of Economic Analysis" />
+
+          <EmbedButton url="https://costbycity.com" title="Data from CostByCity" site="CostByCity" siteUrl="https://costbycity.com" />
 
           <DataFeedback />
 
