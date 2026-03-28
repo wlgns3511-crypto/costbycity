@@ -66,6 +66,22 @@ export default async function CityPage({ params }: Props) {
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Dataset",
+            "name": `Cost of Living in ${metro.short_name} (${year})`,
+            "description": `Cost of living index, housing costs, income, and rent data for the ${metro.short_name} metropolitan area.`,
+            "url": `https://costbycity.com/cities/${slug}`,
+            "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "creator": { "@type": "Organization", "name": "DataPeek Facts", "url": "https://datapeekfacts.com" },
+            "temporalCoverage": "2024/2026",
+            "distribution": { "@type": "DataDownload", "encodingFormat": "text/html" }
+          })
+        }}
+      />
       <Breadcrumb items={breadcrumbs.map((b) => ({ label: b.name, href: b.url }))} />
 
       <h1 className="text-3xl font-bold mb-2">Cost of Living in {metro.short_name}</h1>
