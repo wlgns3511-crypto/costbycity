@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAllMetros, getTopComparisons } from "@/lib/db";
+import { getAllMetros, getAllStates, getTopComparisons } from "@/lib/db";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://costbycity.com";
 
@@ -18,6 +18,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  // State pages
+  const states = getAllStates();
+  const statePages: MetadataRoute.Sitemap = states.map((s) => ({
+    url: `${SITE_URL}/state/${s.toLowerCase()}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
   // Top comparison pages
   const comparisons = getTopComparisons(44000);
   const comparePages: MetadataRoute.Sitemap = comparisons.map((p) => {
@@ -29,5 +37,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
-  return [...staticPages, ...cityPages, ...comparePages];
+  return [...staticPages, ...cityPages, ...statePages, ...comparePages];
 }

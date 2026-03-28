@@ -1,10 +1,11 @@
-import { getMostExpensiveCities, getCheapestCities, getAllCitiesWithRPP } from "@/lib/db";
+import { getMostExpensiveCities, getCheapestCities, getAllCitiesWithRPP, getAllStates } from "@/lib/db";
 import { formatIndex, formatPctDiffShort } from "@/lib/format";
 
 export default function Home() {
   const expensive = getMostExpensiveCities(10);
   const cheapest = getCheapestCities(10);
   const allCities = getAllCitiesWithRPP();
+  const states = getAllStates();
 
   return (
     <div>
@@ -59,6 +60,21 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-bold mb-4">Browse by State</h2>
+        <div className="flex flex-wrap gap-2">
+          {states.map((s) => (
+            <a
+              key={s}
+              href={`/state/${s.toLowerCase()}`}
+              className="px-3 py-1 rounded-full text-sm border border-slate-200 hover:bg-emerald-50 hover:border-emerald-300"
+            >
+              {s}
+            </a>
+          ))}
+        </div>
+      </section>
 
       <section>
         <h2 className="text-xl font-bold mb-4">All Cities</h2>
