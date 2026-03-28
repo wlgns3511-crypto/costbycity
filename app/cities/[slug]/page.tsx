@@ -9,9 +9,11 @@ import { breadcrumbSchema, faqSchema, generateCityFAQs } from "@/lib/schema";
 import { analyzeCost } from "@/lib/cost-analysis";
 import { getCrossRefInsights } from '@/lib/crossref';
 import { DataFeedback } from "@/components/DataFeedback";
+import { CostIndexChart } from "@/components/CostIndexChart";
 import { EmbedButton } from "@/components/EmbedButton";
 import { FreshnessTag } from "@/components/FreshnessTag";
 import { RelocationCalculator } from "@/components/RelocationCalculator";
+import { CiteButton } from "@/components/CiteButton";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -115,6 +117,8 @@ export default async function CityPage({ params }: Props) {
           )}
         </div>
       </div>
+
+      <CostIndexChart index={rppAll} cityName={metro.short_name} />
 
       {/* Area Overview */}
       <section className="mb-6">
@@ -241,6 +245,10 @@ export default async function CityPage({ params }: Props) {
       )}
 
       <FreshnessTag source="Bureau of Economic Analysis" />
+
+      <div className="flex items-center gap-4 mt-4">
+        <CiteButton title={`Cost of Living in ${metro.short_name}`} url={`https://costbycity.com/cities/${slug}`} source="CostByCity (BEA Data)" />
+      </div>
 
           <EmbedButton url="https://costbycity.com" title="Data from CostByCity" site="CostByCity" siteUrl="https://costbycity.com" />
 
