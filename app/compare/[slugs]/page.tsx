@@ -4,6 +4,7 @@ import { getCityData, getTopComparisons } from "@/lib/db";
 import { formatDollar, formatIndex } from "@/lib/format";
 import { ComparisonTable } from "@/components/CostIndex";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { AdSlot } from "@/components/AdSlot";
 import { FAQ } from "@/components/FAQ";
 import { breadcrumbSchema, faqSchema, generateCompareFAQs } from "@/lib/schema";
 
@@ -129,6 +130,8 @@ export default async function ComparePage({ params }: Props) {
           </div>
         </section>
       )}
+
+      <AdSlot id="compare-bottom" />
 
       <FAQ items={faqs} />
 

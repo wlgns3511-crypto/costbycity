@@ -8,6 +8,7 @@ import { FAQ } from "@/components/FAQ";
 import { breadcrumbSchema, faqSchema, generateCityFAQs } from "@/lib/schema";
 import { analyzeCost } from "@/lib/cost-analysis";
 import { getCrossRefInsights } from '@/lib/crossref';
+import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
 import { CostIndexChart } from "@/components/CostIndexChart";
 import { EmbedButton } from "@/components/EmbedButton";
@@ -119,6 +120,8 @@ export default async function CityPage({ params }: Props) {
       </div>
 
       <CostIndexChart index={rppAll} cityName={metro.short_name} />
+
+      <AdSlot id="cost-after-chart" />
 
       {/* Area Overview */}
       <section className="mb-6">
@@ -283,6 +286,8 @@ export default async function CityPage({ params }: Props) {
           })}
         </div>
       </section>
+
+      <AdSlot id="cost-before-faq" />
 
       <FAQ items={faqs} />
 
