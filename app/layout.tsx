@@ -25,8 +25,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-VZWE2SVM79" />
-        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-VZWE2SVM79');` }} />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z4N7FR72M8" />
+        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-Z4N7FR72M8');` }} />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5724806562146685"
@@ -57,21 +57,13 @@ export default function RootLayout({
               <a href="/contact" className="hover:text-emerald-600">Contact</a>
             </p>
             <div className="mt-4 pt-4 border-t border-slate-100">
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">DataPeek Insights Network</p>
+              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Related Resources</p>
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
-                <a href="https://salarybycity.com" className="hover:text-blue-600">Salaries</a>
-                <a href="https://costbycity.com" className="hover:text-blue-600">Cost of Living</a>
-                <a href="https://zippeek.com" className="hover:text-blue-600">ZIP Codes</a>
-                <a href="https://guidebycity.com" className="hover:text-blue-600">City Guides</a>
-                <a href="https://degreewize.com" className="hover:text-blue-600">Colleges</a>
-                <a href="https://caloriewize.com" className="hover:text-blue-600">Nutrition</a>
-                <a href="https://nameblooms.com" className="hover:text-blue-600">Baby Names</a>
-                <a href="https://vocabwize.com" className="hover:text-blue-600">Vocabulary</a>
-                <a href="https://calcpeek.com" className="hover:text-blue-600">Calculators</a>
-                <a href="https://tariffpeek.com" className="hover:text-blue-600">HS Codes &amp; Tariffs</a>
-                <a href="https://ingredipeek.com" className="hover:text-blue-600">Food Allergens</a>
-              
-                <a href="https://sunpowerpeek.com" className="hover:text-blue-600">Solar Power</a>
+                <a href="https://salarybycity.com" className="hover:text-emerald-600">Salaries</a>
+                <a href="https://guidebycity.com" className="hover:text-emerald-600">City Guides</a>
+                <a href="https://zippeek.com" className="hover:text-emerald-600">ZIP Codes</a>
+                <a href="https://fairrentwize.com" className="hover:text-emerald-600">Fair Rents</a>
+                <a href="https://propertytaxpeek.com" className="hover:text-emerald-600">Property Tax</a>
               </div>
             </div>
             <p className="mt-1">&copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.</p>
