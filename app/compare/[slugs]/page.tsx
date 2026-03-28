@@ -18,6 +18,7 @@ function parseSlugs(slugs: string): [string, string] | null {
 }
 
 export const dynamicParams = true;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   const pairs = getTopComparisons(2000);
