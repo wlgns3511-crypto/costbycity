@@ -1,10 +1,21 @@
 import type { MetadataRoute } from "next";
 import { getAllMetros, getAllStates, getTopComparisons } from "@/lib/db";
+import { getAllPosts } from "@/lib/blog";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://costbycity.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const metros = getAllMetros();
+
+  const posts = getAllPosts();
+  const blogPages: MetadataRoute.Sitemap = [
+    { url: `${SITE_URL}/blog/`, changeFrequency: "weekly", priority: 0.8 },
+    ...posts.map((p) => ({
+      url: `${SITE_URL}/blog/${p.slug}/`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+  ];
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: SITE_URL, changeFrequency: "monthly", priority: 1.0 },
@@ -37,5 +48,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
-  return [...staticPages, ...cityPages, ...statePages, ...comparePages];
+  return [...staticPages, ...blogPages, ...cityPages, ...statePages, ...comparePages];
 }
