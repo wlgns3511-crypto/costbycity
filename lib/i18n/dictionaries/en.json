@@ -1,0 +1,24 @@
+{
+  "common": {
+    "home": "Home",
+    "cities": "Cities",
+    "compare": "Compare",
+    "about": "About",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "langSwitch": "ES",
+    "langSwitchPrefix": "/es"
+  },
+  "city": {
+    "costOfLiving": "Cost of Living in {city}",
+    "costIndex": "Cost Index",
+    "housingIndex": "Housing Index",
+    "medianIncome": "Median Income",
+    "medianRent": "Median Rent",
+    "overview": "Overview",
+    "costBreakdown": "Cost Breakdown",
+    "incomeHousing": "Income & Housing",
+    "compareWith": "Compare {city} With"
+  }
+}

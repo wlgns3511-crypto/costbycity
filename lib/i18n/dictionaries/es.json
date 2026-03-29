@@ -1,0 +1,24 @@
+{
+  "common": {
+    "home": "Inicio",
+    "cities": "Ciudades",
+    "compare": "Comparar",
+    "about": "Acerca de",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "contact": "Contacto",
+    "langSwitch": "EN",
+    "langSwitchPrefix": ""
+  },
+  "city": {
+    "costOfLiving": "Costo de Vida en {city}",
+    "costIndex": "Índice de Costo",
+    "housingIndex": "Índice de Vivienda",
+    "medianIncome": "Ingresos Medianos",
+    "medianRent": "Alquiler Mediano",
+    "overview": "Resumen",
+    "costBreakdown": "Desglose de Costos",
+    "incomeHousing": "Ingresos y Vivienda",
+    "compareWith": "Comparar {city} Con"
+  }
+}
