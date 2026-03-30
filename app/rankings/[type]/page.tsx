@@ -33,6 +33,9 @@ const RANKINGS: Record<string, {
 
 interface Props { params: Promise<{ type: string }> }
 
+export const dynamicParams = true;
+export const revalidate = 86400;
+
 export function generateStaticParams() {
   return Object.keys(RANKINGS).map((type) => ({ type }));
 }

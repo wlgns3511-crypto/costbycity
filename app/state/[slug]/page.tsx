@@ -5,6 +5,9 @@ import { formatIndex, formatPctDiffShort } from "@/lib/format";
 
 interface Props { params: Promise<{ slug: string }> }
 
+export const dynamicParams = true;
+export const revalidate = 86400;
+
 export function generateStaticParams() {
   return getAllStates().map((s) => ({ slug: s.toLowerCase() }));
 }

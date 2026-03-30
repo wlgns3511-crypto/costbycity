@@ -18,13 +18,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: SITE_URL, changeFrequency: "monthly", priority: 1.0 },
-    { url: `${SITE_URL}/cities`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${SITE_URL}/compare`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE_URL}/`, changeFrequency: "monthly", priority: 1.0 },
+    { url: `${SITE_URL}/cities/`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE_URL}/compare/`, changeFrequency: "monthly", priority: 0.9 },
   ];
 
   const cityPages: MetadataRoute.Sitemap = metros.map((m) => ({
-    url: `${SITE_URL}/cities/${m.slug}`,
+    url: `${SITE_URL}/cities/${m.slug}/`,
     changeFrequency: "monthly" as const,
     priority: 0.8,
   }));
@@ -32,7 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // State pages
   const states = getAllStates();
   const statePages: MetadataRoute.Sitemap = states.map((s) => ({
-    url: `${SITE_URL}/state/${s.toLowerCase()}`,
+    url: `${SITE_URL}/state/${s.toLowerCase()}/`,
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
@@ -42,11 +42,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const comparePages: MetadataRoute.Sitemap = comparisons.map((p) => {
     const [a, b] = [p.slugA, p.slugB].sort();
     return {
-      url: `${SITE_URL}/compare/${a}-vs-${b}`,
+      url: `${SITE_URL}/compare/${a}-vs-${b}/`,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     };
   });
 
-  return [...staticPages, ...blogPages, ...cityPages, ...statePages, ...comparePages];
+  const entries: MetadataRoute.Sitemap = [...staticPages, ...blogPages, ...cityPages, ...statePages, ...comparePages];
+
+  // Safety: Google limit is 50,000 URLs per sitemap
+  if (entries.length > 50000) {
+    return entries.slice(0, 50000);
+  }
+
+  return entries;
 }

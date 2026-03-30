@@ -15,10 +15,14 @@ import { EmbedButton } from "@/components/EmbedButton";
 import { FreshnessTag } from "@/components/FreshnessTag";
 import { RelocationCalculator } from "@/components/RelocationCalculator";
 import { CiteButton } from "@/components/CiteButton";
+import { AuthorBox } from "@/components/AuthorBox";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
+
+export const dynamicParams = true;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   return getAllMetros().map((m) => ({ slug: m.slug }));
@@ -246,6 +250,8 @@ export default async function CityPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      <AuthorBox />
 
       <FreshnessTag source="Bureau of Economic Analysis" />
 

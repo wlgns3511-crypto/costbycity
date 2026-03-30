@@ -140,6 +140,15 @@ export function getTopComparisons(limit = 5000): { slugA: string; slugB: string 
   `).all(limit) as { slugA: string; slugB: string }[];
 }
 
+export function searchMetros(query: string, limit = 30): Metro[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return getDb().prepare(`
+    SELECT * FROM metros WHERE LOWER(short_name) LIKE ? OR LOWER(name) LIKE ? OR LOWER(slug) LIKE ?
+    ORDER BY short_name LIMIT ?
+  `).all('%' + q + '%', '%' + q + '%', '%' + q + '%', limit) as Metro[];
+}
+
 export function countMetros(): number {
   const row = getDb().prepare('SELECT COUNT(*) as c FROM metros').get() as { c: number };
   return row.c;
