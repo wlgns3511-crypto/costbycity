@@ -5,11 +5,12 @@ import { getAllPosts } from "@/lib/blog";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://costbycity.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const now = new Date();
   const metros = getAllMetros();
 
   const posts = getAllPosts();
   const blogPages: MetadataRoute.Sitemap = [
-    { url: `${SITE_URL}/blog/`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${SITE_URL}/blog/`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...posts.map((p) => ({
       url: `${SITE_URL}/blog/${p.slug}/`,
       changeFrequency: "monthly" as const,
@@ -18,9 +19,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${SITE_URL}/`, changeFrequency: "monthly", priority: 1.0 },
-    { url: `${SITE_URL}/cities/`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${SITE_URL}/compare/`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE_URL}/`, lastModified: now, changeFrequency: "monthly", priority: 1.0 },
+    { url: `${SITE_URL}/cities/`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE_URL}/compare/`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
   ];
 
   const cityPages: MetadataRoute.Sitemap = metros.map((m) => ({
