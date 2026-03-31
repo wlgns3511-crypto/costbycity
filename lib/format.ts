@@ -33,5 +33,5 @@ export function categoryLabel(cat: string): string {
 }
 
 export function getDataYear(): number {
-  return 2023;
+  return 2024;
 }
