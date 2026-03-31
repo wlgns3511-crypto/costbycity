@@ -4,7 +4,7 @@ import { getCityData, getAllMetros } from "@/lib/db";
 import { formatDollar, formatPctDiff, formatIndex } from "@/lib/format";
 
 export const dynamicParams = true;
-export const revalidate = 86400;
+export const revalidate = false;
 
 export function generateStaticParams() {
   return getAllMetros().slice(0, 300).map((m) => ({ slug: m.slug }));

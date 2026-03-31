@@ -205,3 +205,15 @@ export function getMostExpensiveHousing(limit = 20): (Metro & { housing: number 
 export function getPopularMetros(limit = 10): Metro[] {
   return getDb().prepare('SELECT * FROM metros ORDER BY ROWID LIMIT ?').all(limit) as Metro[];
 }
+
+// --- Related cities (same state) ---
+
+export function getRelatedCities(state: string, excludeSlug: string, limit = 6): (Metro & { rpp_all: number })[] {
+  return getDb().prepare(`
+    SELECT m.*, r.value as rpp_all FROM metros m
+    JOIN rpp r ON m.fips = r.fips
+    WHERE m.state = ? AND m.slug != ? AND r.category = 'all'
+      AND r.year = (SELECT MAX(year) FROM rpp)
+    ORDER BY r.value DESC LIMIT ?
+  `).all(state, excludeSlug, limit) as (Metro & { rpp_all: number })[];
+}

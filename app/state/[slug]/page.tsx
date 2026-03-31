@@ -10,7 +10,7 @@ import { CrossSiteLinks } from "@/components/CrossSiteLinks";
 interface Props { params: Promise<{ slug: string }> }
 
 export const dynamicParams = true;
-export const revalidate = 86400;
+export const revalidate = false;
 
 export function generateStaticParams() {
   return getAllStates().map((s) => ({ slug: s.toLowerCase() }));

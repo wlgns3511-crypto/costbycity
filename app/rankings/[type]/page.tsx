@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getMostExpensiveCities, getCheapestCities, getCheapestHousing, getMostExpensiveHousing } from "@/lib/db";
 import { formatIndex, formatPctDiffShort } from "@/lib/format";
+import { itemListSchema, datasetSchema } from "@/lib/schema";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const RANKINGS: Record<string, {
@@ -34,7 +35,7 @@ const RANKINGS: Record<string, {
 interface Props { params: Promise<{ type: string }> }
 
 export const dynamicParams = true;
-export const revalidate = 86400;
+export const revalidate = false;
 
 export function generateStaticParams() {
   return Object.keys(RANKINGS).map((type) => ({ type }));
@@ -54,8 +55,12 @@ export default async function RankingPage({ params }: Props) {
 
   const cities = r.getter(50);
 
+  const listItems = cities.map(c => ({ name: c.short_name, url: `/cities/${c.slug}` }));
+
   return (
     <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema(r.title, `/rankings/${type}`, listItems)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema(r.title, r.desc, `/rankings/${type}`)) }} />
       <nav className="text-sm text-slate-500 mb-4">
         <a href="/" className="hover:underline">Home</a> / <span className="text-slate-800">{r.title}</span>
       </nav>
