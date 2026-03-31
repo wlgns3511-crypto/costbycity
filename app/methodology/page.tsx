@@ -48,6 +48,12 @@ export default function MethodologyPage() {
 
       <h2>Contact</h2>
       <p>Found an error? <a href="/contact/">Contact us</a>.</p>
+    
+      <h2>Official Data Sources</h2>
+      <ul>
+        <li><a href="https://www.bea.gov/data/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Bureau of Economic Analysis</a></li>
+        <li><a href="https://data.census.gov/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">U.S. Census Bureau</a></li>
+      </ul>
     </article>
   );
 }
