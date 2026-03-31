@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Get in touch with the CostByCity team.",
+  alternates: { canonical: "/contact/" },
+  openGraph: { title: "Contact Us", description: "Get in touch with the CostByCity team.", url: "/contact/" },
 };
 
 export default function ContactPage() {

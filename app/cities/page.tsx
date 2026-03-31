@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "All Cities - Cost of Living Data",
   description: "Browse cost of living data for 380+ US metro areas organized by state.",
+  alternates: { canonical: "/cities/" },
+  openGraph: { title: "All Cities - Cost of Living Data", description: "Browse cost of living data for 380+ US metro areas organized by state.", url: "/cities/" },
 };
 
 export default function CitiesPage() {

@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "Terms of service for CostByCity.",
+  alternates: { canonical: "/terms/" },
+  openGraph: { title: "Terms of Service", description: "Terms of service for CostByCity.", url: "/terms/" },
 };
 
 export default function TermsPage() {

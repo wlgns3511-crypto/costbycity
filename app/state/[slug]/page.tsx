@@ -19,9 +19,13 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const state = slug.toUpperCase();
+  const title = `Cost of Living in ${state} - City Comparison`;
+  const description = `Compare cost of living across cities in ${state}. See which cities are most and least expensive.`;
   return {
-    title: `Cost of Living in ${state} - City Comparison`,
-    description: `Compare cost of living across cities in ${state}. See which cities are most and least expensive.`,
+    title,
+    description,
+    alternates: { canonical: `/state/${slug}/` },
+    openGraph: { title, description, url: `/state/${slug}/` },
   };
 }
 
@@ -84,8 +88,8 @@ export default async function StatePage({ params }: Props) {
           "@type": "Dataset",
           name: `Cost of Living in ${state}`,
           description: `Compare cost of living across ${cities.length} metro areas in ${state}.`,
-          url: `https://costoflivingpeek.com/state/${slug}`,
-          dateModified: "2026-03-31",
+          url: `https://costbycity.com/state/${slug}`,
+          dateModified: new Date().toISOString().split('T')[0],
           author: { "@type": "Organization", name: "DataPeek" },
         }) }}
       />

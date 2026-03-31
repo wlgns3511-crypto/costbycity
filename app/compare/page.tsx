@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Compare Cost of Living Between Cities",
   description: "Compare cost of living between any two US metro areas. Side-by-side housing, goods, utilities, and income data.",
+  alternates: { canonical: "/compare/" },
+  openGraph: { title: "Compare Cost of Living Between Cities", description: "Compare cost of living between any two US metro areas. Side-by-side housing, goods, utilities, and income data.", url: "/compare/" },
 };
 
 export default function ComparePage() {

@@ -38,10 +38,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dataB = getCityData(b);
   if (!dataA || !dataB) return {};
 
+  const title = `${dataA.metro.short_name} vs ${dataB.metro.short_name} - Cost of Living Comparison`;
+  const description = `Compare cost of living between ${dataA.metro.short_name} (${formatIndex(dataA.rpp.all || 100)}) and ${dataB.metro.short_name} (${formatIndex(dataB.rpp.all || 100)}). Housing, goods, utilities side by side.`;
   return {
-    title: `${dataA.metro.short_name} vs ${dataB.metro.short_name} - Cost of Living Comparison`,
-    description: `Compare cost of living between ${dataA.metro.short_name} (${formatIndex(dataA.rpp.all || 100)}) and ${dataB.metro.short_name} (${formatIndex(dataB.rpp.all || 100)}). Housing, goods, utilities side by side.`,
+    title,
+    description,
     alternates: { canonical: `/compare/${slugs}` },
+    openGraph: { title, description, url: `/compare/${slugs}` },
   };
 }
 

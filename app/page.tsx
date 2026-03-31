@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import { getMostExpensiveCities, getCheapestCities, getAllCitiesWithRPP, getAllStates } from "@/lib/db";
 import { formatIndex, formatPctDiffShort } from "@/lib/format";
+
+export const metadata: Metadata = {
+  title: "CostByCity — Cost of Living Comparison by US City",
+  description: "Compare cost of living across 387+ US metro areas. Housing, groceries, utilities, transportation — powered by Bureau of Economic Analysis data.",
+  alternates: { canonical: "/" },
+  openGraph: { title: "CostByCity — Cost of Living Comparison", description: "Compare cost of living across 387+ US metro areas with BEA data.", url: "/" },
+};
 
 export default function Home() {
   const expensive = getMostExpensiveCities(10);
