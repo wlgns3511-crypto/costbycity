@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `Cost of Living in ${data.metro.short_name} (${data.year})`,
     description: `Cost of living in ${data.metro.short_name} is ${diff} the national average. See housing, goods, utilities breakdown and compare with other cities.`,
     alternates: { canonical: `/cities/${slug}` },
+    openGraph: { url: `/cities/${slug}` },
   };
 }
 

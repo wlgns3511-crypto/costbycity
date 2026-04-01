@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       canonical: `/es/cities/${slug}`,
       languages: { en: `/cities/${slug}`, es: `/es/cities/${slug}`, "x-default": `/cities/${slug}` },
     },
+    openGraph: { url: `/es/cities/${slug}` },
   };
 }
 
