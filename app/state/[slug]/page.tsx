@@ -79,7 +79,7 @@ export default async function StatePage({ params }: Props) {
         { name: "Census Bureau", url: "https://www.census.gov" },
       ]} />
 
-      <CrossSiteLinks current="CostOfLiving" />
+      <CrossSiteLinks current="CostByCity" />
 
       <script
         type="application/ld+json"
