@@ -4,6 +4,7 @@ import { RelocationCalculator } from "@/components/RelocationCalculator";
 export const metadata: Metadata = {
   title: "Relocation Calculator - Embeddable Widget",
   robots: "noindex, nofollow",
+  openGraph: { url: "/embed/relocation/" },
 };
 
 export default function EmbedRelocationPage() {

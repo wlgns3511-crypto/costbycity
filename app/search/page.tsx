@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Search Cost of Living — US Metro Area Comparisons",
   description: "Search cost of living data for 380+ US metro areas. Compare RPP indexes, housing costs, and income data.",
   alternates: { canonical: "/search" },
+  openGraph: { url: "/search/" },
 };
 
 interface Props {
