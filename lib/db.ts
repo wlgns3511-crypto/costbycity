@@ -140,6 +140,31 @@ export function getTopComparisons(limit = 5000): { slugA: string; slugB: string 
   `).all(limit) as { slugA: string; slugB: string }[];
 }
 
+export function getComparisonCount(): number {
+  const r = getDb().prepare(`
+    SELECT COUNT(*) as c
+    FROM rpp a
+    JOIN rpp b ON a.category = 'all' AND b.category = 'all'
+      AND a.year = b.year AND a.fips < b.fips
+      AND a.year = (SELECT MAX(year) FROM rpp)
+  `).get() as { c: number } | undefined;
+  return r?.c ?? 0;
+}
+
+export function getComparisonsPage(offset: number, limit: number): { slugA: string; slugB: string }[] {
+  return getDb().prepare(`
+    SELECT a_m.slug as slugA, b_m.slug as slugB
+    FROM rpp a
+    JOIN rpp b ON a.category = 'all' AND b.category = 'all'
+      AND a.year = b.year AND a.fips < b.fips
+      AND a.year = (SELECT MAX(year) FROM rpp)
+    JOIN metros a_m ON a.fips = a_m.fips
+    JOIN metros b_m ON b.fips = b_m.fips
+    ORDER BY ABS(a.value - b.value) DESC
+    LIMIT ? OFFSET ?
+  `).all(limit, offset) as { slugA: string; slugB: string }[];
+}
+
 export function searchMetros(query: string, limit = 30): Metro[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
