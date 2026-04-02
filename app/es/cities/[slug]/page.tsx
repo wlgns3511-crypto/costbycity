@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getCityData, getAllMetros } from "@/lib/db";
 import { formatDollar, formatPctDiff, formatIndex } from "@/lib/format";
 
-export const dynamicParams = true;
+export const dynamicParams = false;
 export const revalidate = false;
 
 export function generateStaticParams() {
