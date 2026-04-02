@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "GPTBot", disallow: ["/"] },
       { userAgent: "CCBot", disallow: ["/"] },
     ],
-    sitemap: "https://costbycity.com/sitemap.xml",
+    sitemap: "https://costbycity.com/sitemap/0.xml",
   };
 }
