@@ -16,6 +16,7 @@ import { FreshnessTag } from "@/components/FreshnessTag";
 import { RelocationCalculator } from "@/components/RelocationCalculator";
 import { CiteButton } from "@/components/CiteButton";
 import { AuthorBox } from "@/components/AuthorBox";
+import { InsightCards } from "@/components/InsightCards";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -127,6 +128,8 @@ export default async function CityPage({ params }: Props) {
       <CostIndexChart index={rppAll} cityName={metro.short_name} />
 
       <AdSlot id="cost-after-chart" />
+
+      <InsightCards rppAll={rppAll} acs={acs ?? null} cityName={metro.short_name} />
 
       {/* Area Overview */}
       <section className="mb-6">

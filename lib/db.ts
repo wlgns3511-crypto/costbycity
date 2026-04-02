@@ -233,6 +233,20 @@ export function getPopularMetros(limit = 10): Metro[] {
 
 // --- Related cities (same state) ---
 
+// --- Insight Rankings ---
+
+export function getRPPRank(rppAll: number): { rank: number; total: number } {
+  const total = (getDb().prepare(`SELECT COUNT(*) as c FROM rpp r WHERE r.category = 'all' AND r.year = (SELECT MAX(year) FROM rpp)`).get() as { c: number }).c;
+  const rank = (getDb().prepare(`SELECT COUNT(*) as c FROM rpp r WHERE r.category = 'all' AND r.year = (SELECT MAX(year) FROM rpp) AND r.value > ?`).get(rppAll) as { c: number }).c + 1;
+  return { rank, total };
+}
+
+export function getIncomeRank(income: number): { rank: number; total: number } {
+  const total = (getDb().prepare(`SELECT COUNT(*) as c FROM acs WHERE median_income IS NOT NULL`).get() as { c: number }).c;
+  const rank = (getDb().prepare(`SELECT COUNT(*) as c FROM acs WHERE median_income IS NOT NULL AND median_income > ?`).get(income) as { c: number }).c + 1;
+  return { rank, total };
+}
+
 export function getRelatedCities(state: string, excludeSlug: string, limit = 6): (Metro & { rpp_all: number })[] {
   return getDb().prepare(`
     SELECT m.*, r.value as rpp_all FROM metros m
