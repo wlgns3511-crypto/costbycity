@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from 'next/headers';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { UpgradeAnalytics } from "@/components/upgrades/UpgradeAnalytics";
@@ -9,18 +8,24 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 const SITE_NAME = "CostByCity";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://costbycity.com";
 
-const ROOT_LOCALES = ['es'] as const;
-type RootLocale = (typeof ROOT_LOCALES)[number];
+// Root alternates kept for /es/ hreflang signaling (page-level metadata
+// still advertises the Spanish mirror). /es/ dropped from sitemap 2026-04-23.
 const ROOT_ALTERNATE_LANGUAGES = {
   en: `${SITE_URL}/`,
   es: `${SITE_URL}/es/`,
   'x-default': `${SITE_URL}/`,
 } as const;
 
-function getHtmlLang(pathname: string | null): string {
-  const locale = pathname?.split('/').filter(Boolean)[0] as RootLocale | undefined;
-  return locale && ROOT_LOCALES.includes(locale) ? locale : 'en';
-}
+// 2026-04-23 Step 1b-ext: removed headers()-based dynamic html lang switch.
+// Reason: calling headers() in the root layout forced EVERY route in the tree
+// to render dynamically (ƒ), which silently disabled `dynamicParams = false`
+// validation — pruned state-variant URLs hit the route handler, called
+// notFound(), and Next.js 16 returned HTTP 200 + 404 HTML body (soft-404).
+// With static rendering restored, dynamicParams=false now filters unknown
+// params at the routing layer and returns real HTTP 404.
+// Trade-off: /es/* pages now have lang="en" on the <html> tag. Acceptable
+// because /es/ is already deprioritized (dropped from sitemap) and hreflang
+// alternates still signal the Spanish URL.
 
 
 export const metadata: Metadata = {
@@ -44,14 +49,11 @@ export const metadata: Metadata = {
   other: { "google-adsense-account": "ca-pub-5724806562146685" },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const headerStore = await headers();
-  const pathname = headerStore.get('x-pathname');
-  const htmlLang = getHtmlLang(pathname);
   return (
-    <html lang={htmlLang}>
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
