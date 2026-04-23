@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getCityData, getTopComparisons } from "@/lib/db";
 import { formatDollar, formatIndex } from "@/lib/format";
@@ -18,15 +18,25 @@ function parseSlugs(slugs: string): [string, string] | null {
   return [match[1], match[2]];
 }
 
+const STATIC_COMPARISON_SLUGS = getTopComparisons(100).map((p) => [p.slugA, p.slugB].sort().join("-vs-"));
+const STATIC_COMPARISON_SET = new Set(STATIC_COMPARISON_SLUGS);
+
 export const dynamicParams = false;
-export const revalidate = false;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
-  const pairs = getTopComparisons(2000);
-  return pairs.map((p) => {
-    const [a, b] = [p.slugA, p.slugB].sort();
-    return { slugs: `${a}-vs-${b}` };
+  return STATIC_COMPARISON_SLUGS.flatMap((slugs) => {
+    const parsed = parseSlugs(slugs);
+    if (!parsed) return [];
+    return [
+      { slugs },
+      { slugs: `${parsed[1]}-vs-${parsed[0]}` },
+    ];
   });
+}
+
+function toCanonicalComparisonSlug(slugA: string, slugB: string): string {
+  return [slugA, slugB].sort().join("-vs-");
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -37,14 +47,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dataA = getCityData(a);
   const dataB = getCityData(b);
   if (!dataA || !dataB) return {};
+  const canonicalSlugs = toCanonicalComparisonSlug(dataA.metro.slug, dataB.metro.slug);
+  if (!STATIC_COMPARISON_SET.has(canonicalSlugs)) return {};
 
   const title = `${dataA.metro.short_name} vs ${dataB.metro.short_name} - Cost of Living Comparison`;
   const description = `Compare cost of living between ${dataA.metro.short_name} (${formatIndex(dataA.rpp.all || 100)}) and ${dataB.metro.short_name} (${formatIndex(dataB.rpp.all || 100)}). Housing, goods, utilities side by side.`;
   return {
     title,
     description,
-    alternates: { canonical: `/compare/${slugs}` },
-    openGraph: { title, description, url: `/compare/${slugs}` },
+    alternates: { canonical: `/compare/${canonicalSlugs}/` },
+    openGraph: { title, description, url: `/compare/${canonicalSlugs}/` },
   };
 }
 
@@ -57,6 +69,11 @@ export default async function ComparePage({ params }: Props) {
   const dataA = getCityData(slugA);
   const dataB = getCityData(slugB);
   if (!dataA || !dataB) notFound();
+  const canonicalSlugs = toCanonicalComparisonSlug(dataA.metro.slug, dataB.metro.slug);
+  if (!STATIC_COMPARISON_SET.has(canonicalSlugs)) notFound();
+  if (canonicalSlugs !== slugs) {
+    redirect(`/compare/${canonicalSlugs}/`);
+  }
 
   const { metro: metroA, rpp: rppA, acs: acsA } = dataA;
   const { metro: metroB, rpp: rppB, acs: acsB } = dataB;
@@ -68,7 +85,7 @@ export default async function ComparePage({ params }: Props) {
   const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: "Compare", url: "/compare" },
-    { name: `${metroA.short_name} vs ${metroB.short_name}`, url: `/compare/${slugs}` },
+    { name: `${metroA.short_name} vs ${metroB.short_name}`, url: `/compare/${slugs}/` },
   ];
 
   return (

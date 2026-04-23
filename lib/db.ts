@@ -247,6 +247,52 @@ export function getIncomeRank(income: number): { rank: number; total: number } {
   return { rank, total };
 }
 
+// --- State-level Rankings ---
+
+export function getStatesWithMinMetros(min = 3): string[] {
+  return (getDb().prepare(`
+    SELECT state FROM metros WHERE state IS NOT NULL AND state != ''
+    GROUP BY state HAVING COUNT(*) >= ?
+    ORDER BY state
+  `).all(min) as { state: string }[]).map(r => r.state);
+}
+
+export function getMostExpensiveCitiesInState(state: string, limit = 50): (Metro & { rpp_all: number })[] {
+  return getDb().prepare(`
+    SELECT m.*, r.value as rpp_all FROM metros m
+    JOIN rpp r ON m.fips = r.fips
+    WHERE m.state = ? AND r.category = 'all' AND r.year = (SELECT MAX(year) FROM rpp)
+    ORDER BY r.value DESC LIMIT ?
+  `).all(state, limit) as (Metro & { rpp_all: number })[];
+}
+
+export function getCheapestCitiesInState(state: string, limit = 50): (Metro & { rpp_all: number })[] {
+  return getDb().prepare(`
+    SELECT m.*, r.value as rpp_all FROM metros m
+    JOIN rpp r ON m.fips = r.fips
+    WHERE m.state = ? AND r.category = 'all' AND r.year = (SELECT MAX(year) FROM rpp)
+    ORDER BY r.value ASC LIMIT ?
+  `).all(state, limit) as (Metro & { rpp_all: number })[];
+}
+
+export function getCheapestHousingInState(state: string, limit = 50): (Metro & { housing: number })[] {
+  return getDb().prepare(`
+    SELECT m.*, r.value as housing FROM metros m
+    JOIN rpp r ON m.fips = r.fips
+    WHERE m.state = ? AND r.category = 'housing' AND r.year = (SELECT MAX(year) FROM rpp)
+    ORDER BY r.value ASC LIMIT ?
+  `).all(state, limit) as (Metro & { housing: number })[];
+}
+
+export function getMostExpensiveHousingInState(state: string, limit = 50): (Metro & { housing: number })[] {
+  return getDb().prepare(`
+    SELECT m.*, r.value as housing FROM metros m
+    JOIN rpp r ON m.fips = r.fips
+    WHERE m.state = ? AND r.category = 'housing' AND r.year = (SELECT MAX(year) FROM rpp)
+    ORDER BY r.value DESC LIMIT ?
+  `).all(state, limit) as (Metro & { housing: number })[];
+}
+
 export function getRelatedCities(state: string, excludeSlug: string, limit = 6): (Metro & { rpp_all: number })[] {
   return getDb().prepare(`
     SELECT m.*, r.value as rpp_all FROM metros m

@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import { getCityData, getAllMetros } from "@/lib/db";
 import { formatDollar, formatPctDiff, formatIndex } from "@/lib/format";
 
-export const dynamicParams = false;
-export const revalidate = false;
+export const dynamicParams = true;
+export const revalidate = 86400;
 
 export function generateStaticParams() {
-  return getAllMetros().slice(0, 300).map((m) => ({ slug: m.slug }));
+  return getAllMetros().map((m) => ({ slug: m.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -19,10 +19,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `Costo de Vida en ${data.metro.short_name} (${data.year})`,
     description: `El costo de vida en ${data.metro.short_name} es ${diff} el promedio nacional. Vivienda, ingresos, alquiler y m&aacute;s.`,
     alternates: {
-      canonical: `/es/cities/${slug}`,
+      canonical: `/es/cities/${slug}/`,
       languages: { en: `/cities/${slug}`, es: `/es/cities/${slug}`, "x-default": `/cities/${slug}` },
     },
-    openGraph: { url: `/es/cities/${slug}` },
+    openGraph: { url: `/es/cities/${slug}/` },
   };
 }
 

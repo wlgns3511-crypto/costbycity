@@ -1,4 +1,4 @@
-import { getAllCitiesWithRPP } from "@/lib/db";
+import { getMetroBySlug, getTopComparisons } from "@/lib/db";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +9,17 @@ export const metadata: Metadata = {
 };
 
 export default function ComparePage() {
-  const cities = getAllCitiesWithRPP().slice(0, 50); // Top 50 for display
+  const comparisons = getTopComparisons(20)
+    .map(({ slugA, slugB }) => {
+      const cityA = getMetroBySlug(slugA);
+      const cityB = getMetroBySlug(slugB);
+      if (!cityA || !cityB) return null;
+      return {
+        href: `/compare/${slugA}-vs-${slugB}`,
+        label: `${cityA.short_name} vs ${cityB.short_name}`,
+      };
+    })
+    .filter((item): item is { href: string; label: string } => item !== null);
 
   return (
     <div>
@@ -18,12 +28,10 @@ export default function ComparePage() {
 
       <h2 className="text-xl font-bold mb-4">Popular Comparisons</h2>
       <div className="grid sm:grid-cols-2 gap-2 text-sm">
-        {cities.slice(0, 20).map((cityA, i) => {
-          const cityB = cities[i + 20] || cities[0];
-          const [a, b] = [cityA.slug, cityB.slug].sort();
+        {comparisons.map((item) => {
           return (
-            <a key={i} href={`/compare/${a}-vs-${b}`} className="p-3 border border-slate-200 rounded-lg hover:bg-slate-50 text-emerald-600 hover:underline">
-              {cityA.short_name} vs {cityB.short_name}
+            <a key={item.href} href={item.href} className="p-3 border border-slate-200 rounded-lg hover:bg-slate-50 text-emerald-600 hover:underline">
+              {item.label}
             </a>
           );
         })}

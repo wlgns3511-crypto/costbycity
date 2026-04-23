@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getMostExpensiveCities, getCheapestCities, getAllCitiesWithRPP, getAllStates } from "@/lib/db";
 import { formatIndex, formatPctDiffShort } from "@/lib/format";
+import { PopularEntities } from "@/components/upgrades/PopularEntities";
 
 export const metadata: Metadata = {
   title: "CostByCity — Cost of Living Comparison by US City",
@@ -24,6 +25,18 @@ export default function Home() {
           Housing, goods, utilities, and services — powered by Bureau of Economic Analysis data.
         </p>
       </section>
+
+      <PopularEntities
+        heading="Most Searched Cities"
+        subheading="Based on population & search interest"
+        items={allCities.slice(0, 12).map(c => ({
+          name: c.short_name,
+          href: `/cities/${c.slug}`,
+          stat: `Index ${c.rpp_all.toFixed(1)}`,
+        }))}
+        viewAllHref="/rankings"
+        viewAllLabel="View all rankings →"
+      />
 
       <div className="grid md:grid-cols-2 gap-8 mb-12">
         <section>

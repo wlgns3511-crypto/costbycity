@@ -1,13 +1,14 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCityData, getAllMetros, getAllCitiesWithRPP, getRPPHistory } from "@/lib/db";
+import { getCityData, getAllMetros, getAllCitiesWithRPP, getRPPHistory, getRelatedCities } from "@/lib/db";
+import { buildDbPageRobots, buildTrustUpdatedLabel, getDbPageGate, getReviewedAt, getReviewedBy, METHODOLOGY_URL } from "@/lib/db-page";
 import { formatDollar, formatPctDiff, formatIndex } from "@/lib/format";
 import { CostBreakdown } from "@/components/CostIndex";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { FAQ } from "@/components/FAQ";
-import { breadcrumbSchema, faqSchema, generateCityFAQs } from "@/lib/schema";
+import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { analyzeCost } from "@/lib/cost-analysis";
-import { getCrossRefInsights } from '@/lib/crossref';
+import { generateAutoFaqs } from '@/lib/auto-faqs';
 import { AdSlot } from "@/components/AdSlot";
 import { DataFeedback } from "@/components/DataFeedback";
 import { CostIndexChart } from "@/components/CostIndexChart";
@@ -17,13 +18,22 @@ import { RelocationCalculator } from "@/components/RelocationCalculator";
 import { CiteButton } from "@/components/CiteButton";
 import { AuthorBox } from "@/components/AuthorBox";
 import { InsightCards } from "@/components/InsightCards";
+import { AnswerHero } from "@/components/upgrades/AnswerHero";
+import { TrustBlock } from "@/components/upgrades/TrustBlock";
+import { InsightBlock } from "@/components/upgrades/InsightBlock";
+import { DecisionNext } from "@/components/upgrades/DecisionNext";
+import { getCostInsights } from "@/lib/insights";
+import { RelatedEntities } from "@/components/upgrades/RelatedEntities";
+import { TableOfContents } from '@/components/upgrades/TableOfContents';
+import { AffordabilityCalc } from "@/components/tools/AffordabilityCalc";
+import { FeedbackButton } from "@/components/FeedbackButton";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamicParams = false;
-export const revalidate = false;
+export const dynamicParams = true;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   return getAllMetros().map((m) => ({ slug: m.slug }));
@@ -33,12 +43,45 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = getCityData(slug);
   if (!data) return {};
-  const diff = formatPctDiff(data.rpp.all || 100);
+  const { metro, rpp, acs, year } = data;
+  const rppAll = rpp.all || 100;
+  const housingIdx = rpp.housing || rppAll;
+  const goodsIdx = rpp.goods || rppAll;
+  const servicesIdx = rpp.services || rppAll;
+  const diff = formatPctDiff(rppAll);
+
+  // Peer: same-state metro with a meaningfully different COL index (5%-80% diff)
+  const sameState = getRelatedCities(metro.state, slug, 20);
+  const peer = sameState.find((p) => {
+    const d = Math.abs((p.rpp_all - rppAll) / rppAll);
+    return d > 0.03 && d < 0.8;
+  }) || sameState[0];
+
+  let title: string;
+  let description: string;
+  const dataVintage = `${year} BEA RPP + ACS data`;
+  if (peer) {
+    const pct = Math.round(((peer.rpp_all - rppAll) / peer.rpp_all) * 100);
+    const absPct = Math.abs(pct);
+    const dir = pct > 0 ? 'cheaper' : 'pricier';
+    title = `${metro.short_name} Cost of Living ${year}: Index ${formatIndex(rppAll)} vs ${peer.short_name} ${formatIndex(peer.rpp_all)}`;
+    description = `${metro.short_name} metro COL index ${formatIndex(rppAll)} (${diff} US avg) — ${absPct}% ${dir} than ${peer.short_name}. Housing ${formatIndex(housingIdx)}, goods ${formatIndex(goodsIdx)}, services ${formatIndex(servicesIdx)}${acs?.median_rent ? `, median rent ${formatDollar(acs.median_rent)}/mo` : ''}. ${year} data.`;
+  } else {
+    title = `${metro.short_name} Cost of Living ${year}: Index ${formatIndex(rppAll)} (${diff} US)`;
+    description = `${metro.short_name}, ${metro.state}: COL index ${formatIndex(rppAll)} (${diff} US avg). Housing ${formatIndex(housingIdx)}, goods ${formatIndex(goodsIdx)}, services ${formatIndex(servicesIdx)}${acs?.median_rent ? `, median rent ${formatDollar(acs.median_rent)}/mo` : ''}. ${year} data.`;
+  }
+  const gate = getDbPageGate({
+    alternativeLinkCount: Math.max(3, sameState.slice(0, 3).length),
+    dataVintage,
+    topAnswer: description,
+  });
+
   return {
-    title: `Cost of Living in ${data.metro.short_name} (${data.year})`,
-    description: `Cost of living in ${data.metro.short_name} is ${diff} the national average. See housing, goods, utilities breakdown and compare with other cities.`,
-    alternates: { canonical: `/cities/${slug}` },
-    openGraph: { url: `/cities/${slug}` },
+    title,
+    description,
+    alternates: { canonical: `/cities/${slug}/` },
+    openGraph: { title, description, url: `/cities/${slug}/` },
+    robots: buildDbPageRobots(gate.pass),
   };
 }
 
@@ -47,23 +90,21 @@ export default async function CityPage({ params }: Props) {
   const data = getCityData(slug);
   if (!data) notFound();
 
-  const { metro, rpp, acs, year } = data;
-  const crossInsights = getCrossRefInsights(slug, 'cost');
+  const { metro, rpp: rppRaw, acs, year } = data;
+  const rpp = rppRaw as any;
   const allCities = getAllCitiesWithRPP();
   const history = getRPPHistory(metro.fips);
   const analysis = analyzeCost(metro.short_name, rpp, acs ?? null, history);
-  const baseFaqs = generateCityFAQs(metro.short_name, rpp, acs);
+  const autoFaqItems = generateAutoFaqs(metro.short_name, rpp, acs, year);
   const faqs = [
-    ...baseFaqs,
-    { question: `Is ${metro.short_name} affordable to live in?`, answer: analysis.affordabilityVerdict || analysis.summary },
-    ...(analysis.salaryNeeded ? [{ question: `What salary do you need to live in ${metro.short_name}?`, answer: analysis.salaryNeeded }] : []),
+    ...autoFaqItems,
     ...(analysis.trendNote ? [{ question: `Is ${metro.short_name} getting more expensive?`, answer: analysis.trendNote }] : []),
   ];
 
   const breadcrumbs = [
     { name: "Home", url: "/" },
     { name: "Cities", url: "/cities" },
-    { name: metro.short_name, url: `/cities/${slug}` },
+    { name: metro.short_name, url: `/cities/${slug}/` },
   ];
 
   // Find nearby RPP cities for comparison suggestions
@@ -72,6 +113,7 @@ export default async function CityPage({ params }: Props) {
     .filter((c) => c.fips !== metro.fips)
     .sort((a, b) => Math.abs(a.rpp_all - rppAll) - Math.abs(b.rpp_all - rppAll))
     .slice(0, 10);
+  const dataVintage = `${year} BEA RPP + ACS data`;
 
   return (
     <div>
@@ -86,15 +128,69 @@ export default async function CityPage({ params }: Props) {
             "url": `https://costbycity.com/cities/${slug}`,
             "license": "https://creativecommons.org/publicdomain/zero/1.0/",
             "creator": { "@type": "Organization", "name": "DataPeek Facts", "url": "https://datapeekfacts.com" },
-            "temporalCoverage": "2024/2026",
-            "distribution": { "@type": "DataDownload", "encodingFormat": "text/html" }
+            "temporalCoverage": String(year),
+            "distribution": { "@type": "DataDownload", "encodingFormat": "text/html", "contentUrl": `https://costbycity.com/cities/${slug}` }
           })
         }}
       />
       <Breadcrumb items={breadcrumbs.map((b) => ({ label: b.name, href: b.url }))} />
 
-      <h1 className="text-3xl font-bold mb-2">Cost of Living in {metro.short_name}</h1>
-      <p className="text-slate-500 mb-6">{year} data from the Bureau of Economic Analysis</p>
+      <AnswerHero
+        title={`Cost of living in ${metro.short_name}`}
+        subtitle={`${year} BEA data`}
+        tagline={`${metro.short_name} has a cost-of-living index of ${formatIndex(rpp.all || 100)} \u2014 ${formatPctDiff(rpp.all || 100)} the US average. ${analysis.summary}`}
+        badges={[
+          {
+            label: (rpp.all || 100) > 100 ? `${formatPctDiff(rpp.all || 100)} above US` : `${formatPctDiff(rpp.all || 100)} below US`,
+            tone: ((rpp.all || 100) > 100 ? "amber" : "emerald") as "amber" | "emerald",
+          },
+          { label: `BEA RPP ${year}`, tone: "indigo" as const },
+        ]}
+        alternatives={compareCities.slice(0, 3).map((c) => ({
+          label: c.short_name,
+          href: `/cities/${c.slug}`,
+          sublabel: formatIndex(c.rpp_all),
+        }))}
+        alternativesLabel="Comparable-cost metros"
+      />
+
+      <FreshnessTag
+        source="BEA Regional Price Parities + Census ACS"
+        updated={getReviewedAt()}
+        reviewedBy={getReviewedBy()}
+        dataVintage={dataVintage}
+      />
+
+      <TrustBlock
+        sources={[
+          {
+            name: "BEA Regional Price Parities",
+            url: "https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area",
+          },
+          {
+            name: "Census ACS",
+            url: "https://www.census.gov/programs-surveys/acs/",
+          },
+          {
+            name: "BLS CPI",
+            url: "https://www.bls.gov/cpi/",
+          },
+          {
+            name: "HUD Fair Market Rents",
+            url: "https://www.huduser.gov/portal/datasets/fmr.html",
+          },
+          {
+            name: "MIT Living Wage Calculator",
+            url: "https://livingwage.mit.edu/",
+          },
+        ]}
+        updated={buildTrustUpdatedLabel(dataVintage)}
+        methodologyUrl={METHODOLOGY_URL}
+      />
+
+      <InsightBlock entityName={metro.short_name} insights={getCostInsights(metro.short_name, rpp, acs ?? null)} />
+
+      <TableOfContents />
 
       {/* Hero stat */}
       <div className="bg-emerald-50 rounded-lg p-6 mb-6">
@@ -130,6 +226,14 @@ export default async function CityPage({ params }: Props) {
       <AdSlot id="cost-after-chart" />
 
       <InsightCards rppAll={rppAll} acs={acs ?? null} cityName={metro.short_name} />
+
+      <AffordabilityCalc
+        cityName={metro.short_name}
+        costIndex={rpp.all || 100}
+        housingIndex={rpp.housing || 100}
+        groceriesIndex={rpp.goods || 100}
+        medianIncome={acs?.median_income ?? null}
+      />
 
       {/* Area Overview */}
       <section className="mb-6">
@@ -184,6 +288,40 @@ export default async function CityPage({ params }: Props) {
 
       <h2 className="text-xl font-bold mb-3">Cost Breakdown</h2>
       <CostBreakdown rpp={rpp} />
+
+      {/* Deep-dive cross-links — Tier S HCU expansion 2026-04-21 (+ Batch 9 2026-04-21) */}
+      <section className="my-6 grid sm:grid-cols-2 gap-3">
+        <a
+          href={`/cities/${slug}/housing-breakdown/`}
+          className="block p-5 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl hover:border-emerald-400 hover:shadow-sm transition"
+        >
+          <div className="text-xs text-emerald-700 uppercase tracking-wider font-semibold mb-1">
+            Deep Dive · Housing
+          </div>
+          <div className="text-base font-bold text-slate-900 mb-1">
+            {metro.short_name} housing breakdown: rent, buy & affordability →
+          </div>
+          <div className="text-sm text-slate-700">
+            Rent vs. buy math at median home value, what your rent budget
+            actually rents, income needed, and category comparison.
+          </div>
+        </a>
+        <a
+          href={`/cities/${slug}/utility-bill/`}
+          className="block p-5 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl hover:border-amber-400 hover:shadow-sm transition"
+        >
+          <div className="text-xs text-amber-700 uppercase tracking-wider font-semibold mb-1">
+            Deep Dive · Utilities
+          </div>
+          <div className="text-base font-bold text-slate-900 mb-1">
+            {metro.short_name} utility bill: electric, gas, water, internet →
+          </div>
+          <div className="text-sm text-slate-700">
+            Monthly bill breakdown, seasonal swing (summer vs. winter), climate
+            zone context, and utility-share-of-rent budgeting.
+          </div>
+        </a>
+      </section>
 
       {history.length > 1 && (
         <section className="mt-8">
@@ -242,22 +380,75 @@ export default async function CityPage({ params }: Props) {
 
       <RelocationCalculator cityName={metro.short_name} defaultCostIndex={rppAll} />
 
-      {crossInsights.length > 0 && (
-        <section className="mt-8 mb-6">
-          <h2 className="text-xl font-bold mb-3">Related Data Insights</h2>
-          <div className="space-y-2">
-            {crossInsights.map((insight, i) => (
-              <div key={i} className="p-3 bg-slate-50 border-l-4 border-slate-300 rounded-r-lg">
-                <p className="text-sm text-slate-700" dangerouslySetInnerHTML={{ __html: insight }} />
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* Why this matters — US relocator context */}
+      <section className="mb-8 mt-10" data-upgrade="why-it-matters">
+        <h2 className="text-xl font-bold mb-3">
+          Why cost of living in {metro.short_name} matters
+        </h2>
+        <div className="rounded-lg border border-slate-200 bg-white p-5 text-slate-700 leading-relaxed space-y-3">
+          <p>
+            The Regional Price Parity (RPP) index from the BEA is the most
+            authoritative single number for &ldquo;how much more or less does a
+            dollar buy here compared to the average US metro?&rdquo;. {metro.short_name}&apos;s
+            index of {formatIndex(rpp.all || 100)} means the same basket of
+            goods, services, and housing costs {Math.abs((rpp.all || 100) - 100).toFixed(1)}%
+            {(rpp.all || 100) > 100 ? " more " : " less "}
+            here than the US average. For relocation decisions, that&apos;s a
+            larger lever than most people realize &mdash; a 15% RPP gap on a
+            $80,000 budget is $12,000 a year.
+          </p>
+          <p>
+            Cost of living is dominated by housing in most US metros. The BEA
+            publishes housing rents separately from goods and other services,
+            and the housing component is usually the most volatile across
+            metros. If a city&apos;s overall index looks expensive, check
+            whether housing is doing all the work &mdash; it usually is.
+          </p>
+          <p>
+            For an actual decision (job offer, move) pair this with three
+            things: (1) take-home pay at the new salary and tax jurisdiction,
+            (2) the property tax bill if you&apos;re buying, and (3) the
+            housing market specifically (median home price or median rent).
+            BEA RPP gives you the rough multiplier; the other three give you
+            your actual monthly P&amp;L.
+          </p>
+          <p className="text-sm text-slate-500">
+            BEA RPP data lags by 12&ndash;18 months. {metro.short_name}&apos;s
+            {" "}{year} figures reflect the most recent complete release.
+          </p>
+        </div>
+      </section>
+
+      <DecisionNext
+        cards={[
+          {
+            title: `Salary needed in ${metro.short_name}`,
+            blurb: `See actual ${metro.short_name} salaries by occupation \u2014 the other half of the affordability equation.`,
+            href: `https://salarybycity.com/locations/${slug}`,
+            cta: `Open SalaryByCity`,
+            tone: "indigo" as const,
+          },
+          {
+            title: `Take-home pay calculator`,
+            blurb: `Convert gross salary to net pay at ${metro.short_name}'s state and local tax rates.`,
+            href: `https://netpaypeek.com`,
+            cta: `Open NetPayPeek`,
+            tone: "emerald" as const,
+          },
+          {
+            title: `Median home price`,
+            blurb: `Housing usually drives the cost-of-living gap. See ${metro.short_name} home prices.`,
+            href: `https://homepricepeek.com`,
+            cta: `Open HomePricePeek`,
+            tone: "amber" as const,
+          },
+        ]}
+      />
+
 
       <AuthorBox />
 
-      <FreshnessTag source="Bureau of Economic Analysis" />
+      <FreshnessTag source="BEA Regional Price Parities + Census ACS + HUD FMR + BLS CPI" />
 
       <div className="flex items-center gap-4 mt-4">
         <CiteButton title={`Cost of Living in ${metro.short_name}`} url={`https://costbycity.com/cities/${slug}`} source="CostByCity (BEA Data)" />
@@ -297,7 +488,20 @@ export default async function CityPage({ params }: Props) {
         </div>
       </section>
 
+      <RelatedEntities
+        entityName={metro.short_name}
+        heading={`Similar metros to ${metro.short_name}`}
+        statLabel="Cost Index"
+        items={getRelatedCities(metro.state, slug, 8).map((c) => ({
+          name: c.short_name,
+          href: `/cities/${c.slug}`,
+          stat: c.rpp_all.toFixed(1),
+        }))}
+      />
+
       <AdSlot id="cost-before-faq" />
+
+      <FeedbackButton pageId={slug} />
 
       <FAQ items={faqs} />
 

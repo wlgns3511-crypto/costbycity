@@ -4,8 +4,8 @@ import { getCityData, getAllMetros } from '@/lib/db';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-export const dynamicParams = false;
-export const revalidate = false;
+export const dynamicParams = true;
+export const revalidate = 86400;
 
 export function generateStaticParams() {
   return getAllMetros().map((m) => ({ slug: m.slug }));

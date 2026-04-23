@@ -1,0 +1,168 @@
+{
+  "generated_at": "2026-04-17",
+  "source": "GSC 28-day page-level performance",
+  "criteria": "clicks > 0 OR impressions >= 3",
+  "count": 32,
+  "entries": [
+    {
+      "path": "/compare/bend-or-vs-salem-or/",
+      "clicks": 1,
+      "imprs": 11
+    },
+    {
+      "path": "/compare/bismarck-nd-vs-peoria-il/",
+      "clicks": 1,
+      "imprs": 1
+    },
+    {
+      "path": "/compare/fairbanks-college-ak-vs-phoenix-mesa-chandler-az/",
+      "clicks": 0,
+      "imprs": 6
+    },
+    {
+      "path": "/compare/fairbanks-college-ak-vs-phoenix-mesa-chandler-az/",
+      "clicks": 0,
+      "imprs": 5
+    },
+    {
+      "path": "/compare/beaumont-port-arthur-tx-vs-victoria-tx/",
+      "clicks": 0,
+      "imprs": 3
+    },
+    {
+      "path": "/compare/beaumont-port-arthur-tx-vs-victoria-tx/",
+      "clicks": 0,
+      "imprs": 7
+    },
+    {
+      "path": "/compare/beckley-wv-vs-wheeling-wv-oh/",
+      "clicks": 0,
+      "imprs": 5
+    },
+    {
+      "path": "/compare/bend-or-vs-salem-or/",
+      "clicks": 0,
+      "imprs": 4
+    },
+    {
+      "path": "/compare/billings-mt-vs-roanoke-va/",
+      "clicks": 0,
+      "imprs": 13
+    },
+    {
+      "path": "/compare/carson-city-nv-vs-prescott-valley-prescott-az/",
+      "clicks": 0,
+      "imprs": 6
+    },
+    {
+      "path": "/compare/carson-city-nv-vs-raleigh-cary-nc/",
+      "clicks": 0,
+      "imprs": 3
+    },
+    {
+      "path": "/compare/chambersburg-pa-vs-harrisonburg-va/",
+      "clicks": 0,
+      "imprs": 5
+    },
+    {
+      "path": "/compare/chambersburg-pa-vs-harrisonburg-va/",
+      "clicks": 0,
+      "imprs": 8
+    },
+    {
+      "path": "/compare/chicago-naperville-elgin-il-in-vs-fairbanks-college-ak/",
+      "clicks": 0,
+      "imprs": 3
+    },
+    {
+      "path": "/compare/cleveland-tn-vs-valdosta-ga/",
+      "clicks": 0,
+      "imprs": 5
+    },
+    {
+      "path": "/compare/columbus-oh-vs-savannah-ga/",
+      "clicks": 0,
+      "imprs": 4
+    },
+    {
+      "path": "/compare/dalton-ga-vs-montgomery-al/",
+      "clicks": 0,
+      "imprs": 3
+    },
+    {
+      "path": "/compare/durham-chapel-hill-nc-vs-richmond-va/",
+      "clicks": 0,
+      "imprs": 6
+    },
+    {
+      "path": "/compare/greenville-anderson-greer-sc-vs-huntsville-al/",
+      "clicks": 0,
+      "imprs": 21
+    },
+    {
+      "path": "/compare/hilton-head-island-bluffton-port-royal-sc-vs-pensacola-ferry-pass-brent-fl/",
+      "clicks": 0,
+      "imprs": 9
+    },
+    {
+      "path": "/compare/huntington-ashland-wv-ky-oh-vs-wheeling-wv-oh/",
+      "clicks": 0,
+      "imprs": 3
+    },
+    {
+      "path": "/compare/huntsville-al-vs-lexington-fayette-ky/",
+      "clicks": 0,
+      "imprs": 14
+    },
+    {
+      "path": "/compare/ogden-ut-vs-spokane-spokane-valley-wa/",
+      "clicks": 0,
+      "imprs": 4
+    },
+    {
+      "path": "/compare/ames-ia-vs-cedar-rapids-ia/",
+      "clicks": 0,
+      "imprs": 14
+    },
+    {
+      "path": "/compare/atlanta-sandy-springs-roswell-ga-vs-flagstaff-az/",
+      "clicks": 0,
+      "imprs": 7
+    },
+    {
+      "path": "/compare/bend-or-vs-salem-or/",
+      "clicks": 0,
+      "imprs": 8
+    },
+    {
+      "path": "/compare/casper-wy-vs-cleveland-oh/",
+      "clicks": 0,
+      "imprs": 3
+    },
+    {
+      "path": "/compare/dalton-ga-vs-montgomery-al/",
+      "clicks": 0,
+      "imprs": 6
+    },
+    {
+      "path": "/compare/greenville-anderson-greer-sc-vs-huntsville-al/",
+      "clicks": 0,
+      "imprs": 17
+    },
+    {
+      "path": "/compare/huntsville-al-vs-lexington-fayette-ky/",
+      "clicks": 0,
+      "imprs": 6
+    },
+    {
+      "path": "/compare/huntsville-al-vs-lexington-fayette-ky/",
+      "clicks": 0,
+      "imprs": 18
+    },
+    {
+      "path": "/compare/pensacola-ferry-pass-brent-fl-vs-richmond-va/",
+      "clicks": 0,
+      "imprs": 5
+    }
+  ]
+}
