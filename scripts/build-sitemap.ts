@@ -98,30 +98,51 @@ for (const s of getAllStates()) {
   add({ url: `${SITE_URL}/state/${s.toLowerCase()}/`, priority: '0.7', changefreq: 'monthly' });
 }
 
-// Compare pages: whitelist-only (2026-04-23)
-// Prior to 2026-04-23: whitelist sat in data/compare-whitelist.json but
-// compare/[slugs]/page.tsx only rendered top-100 RPP-diff pairs →
-// whitelisted URLs returned soft-404. With compare/[slugs] now unioning
-// top-100 ∪ whitelist, these URLs render real content and are safe to
-// announce. Doorway risk stays low because we only advertise pages with
-// proven Google impressions/clicks — not the full city×city matrix.
-try {
-  const wlJson = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, '..', 'data', 'compare-whitelist.json'), 'utf8'),
-  );
+// Compare pages: featured (editorial) + whitelist (GSC-discovered)
+// 2026-04-23 Phase 2 P0: dropped Top-100 RPP-diff SQL (99/100 junk pairs).
+// Sitemap now announces only pages with either (a) proven GSC impressions/
+// clicks (whitelist) or (b) realistic relocation search intent (featured).
+// Doorway risk stays low because we do not advertise the full city×city
+// matrix — only ~40 curated pairs.
+{
   const seen = new Set<string>();
-  for (const e of (wlJson.entries ?? [])) {
-    const p = String(e.path || '').replace(/^\/compare\//, '').replace(/\/$/, '');
-    const m = p.match(/^(.+)-vs-(.+)$/);
-    if (!m) continue;
-    const [a, b] = [m[1], m[2]].sort();
-    const key = `${a}-vs-${b}`;
-    if (seen.has(key)) continue;
+  const addPair = (key: string, priority: string) => {
+    if (seen.has(key)) return;
     seen.add(key);
-    add({ url: `${SITE_URL}/compare/${key}/`, priority: '0.6', changefreq: 'monthly' });
+    add({ url: `${SITE_URL}/compare/${key}/`, priority, changefreq: 'monthly' });
+  };
+
+  // Featured editorial pairs (higher priority — classic metro rivalries)
+  try {
+    const fpJson = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '..', 'data', 'compare-featured.json'), 'utf8'),
+    );
+    for (const e of (fpJson.pairs ?? [])) {
+      const a = String(e.slugA || '');
+      const b = String(e.slugB || '');
+      if (!a || !b || a === b) continue;
+      const [s1, s2] = [a, b].sort();
+      addPair(`${s1}-vs-${s2}`, '0.7');
+    }
+  } catch {
+    // featured missing is non-fatal
   }
-} catch {
-  // whitelist missing is non-fatal
+
+  // GSC-discovered whitelist pairs
+  try {
+    const wlJson = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '..', 'data', 'compare-whitelist.json'), 'utf8'),
+    );
+    for (const e of (wlJson.entries ?? [])) {
+      const p = String(e.path || '').replace(/^\/compare\//, '').replace(/\/$/, '');
+      const m = p.match(/^(.+)-vs-(.+)$/);
+      if (!m) continue;
+      const [a, b] = [m[1], m[2]].sort();
+      addPair(`${a}-vs-${b}`, '0.6');
+    }
+  } catch {
+    // whitelist missing is non-fatal
+  }
 }
 
 // ─── Cardinality guard ────────────────────────────────────────────────────
