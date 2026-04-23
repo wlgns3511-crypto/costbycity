@@ -98,10 +98,31 @@ for (const s of getAllStates()) {
   add({ url: `${SITE_URL}/state/${s.toLowerCase()}/`, priority: '0.7', changefreq: 'monthly' });
 }
 
-// Compare pages excluded from sitemap (2026-04-17)
-// GSC-whitelist approach generated 404s for entries not in generateStaticParams.
-// Thin synthetic matrix (city×city) is doorway-prone per Google scaled-content policy.
-// Pages still render via generateStaticParams; just not announced in sitemap.
+// Compare pages: whitelist-only (2026-04-23)
+// Prior to 2026-04-23: whitelist sat in data/compare-whitelist.json but
+// compare/[slugs]/page.tsx only rendered top-100 RPP-diff pairs →
+// whitelisted URLs returned soft-404. With compare/[slugs] now unioning
+// top-100 ∪ whitelist, these URLs render real content and are safe to
+// announce. Doorway risk stays low because we only advertise pages with
+// proven Google impressions/clicks — not the full city×city matrix.
+try {
+  const wlJson = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, '..', 'data', 'compare-whitelist.json'), 'utf8'),
+  );
+  const seen = new Set<string>();
+  for (const e of (wlJson.entries ?? [])) {
+    const p = String(e.path || '').replace(/^\/compare\//, '').replace(/\/$/, '');
+    const m = p.match(/^(.+)-vs-(.+)$/);
+    if (!m) continue;
+    const [a, b] = [m[1], m[2]].sort();
+    const key = `${a}-vs-${b}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    add({ url: `${SITE_URL}/compare/${key}/`, priority: '0.6', changefreq: 'monthly' });
+  }
+} catch {
+  // whitelist missing is non-fatal
+}
 
 // ─── Cardinality guard ────────────────────────────────────────────────────
 if (entries.length > 1800 && !process.env.SITEMAP_LARGE_OK) {
