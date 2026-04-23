@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { getCityData, getAllMetros } from "@/lib/db";
 import { formatDollar, formatPctDiff, formatIndex } from "@/lib/format";
 
-export const dynamicParams = true;
+// dynamicParams=false (2026-04-23): unknown slugs return real HTTP 404.
+// Mirrors /cities/[slug] pattern. All 387 metros prebuilt.
+export const dynamicParams = false;
 export const revalidate = 86400;
 
 export function generateStaticParams() {

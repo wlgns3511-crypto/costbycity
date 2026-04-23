@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { AdSlot } from "@/components/AdSlot";
 
-export const dynamicParams = true;
+// dynamicParams=false (2026-04-23): unknown blog slugs return real HTTP 404.
+// All posts prebuilt. Avoids Next.js 16 soft-404.
+export const dynamicParams = false;
 export const revalidate = 86400;
 
 export function generateStaticParams() {

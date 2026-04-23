@@ -31,7 +31,10 @@ function buildStateTopAnswer({
   return `${state} includes ${cityCount} metro areas, ranging from ${cheapestCity.short_name} at an index of ${formatIndex(cheapestCity.rpp_all)} to ${mostExpensiveCity.short_name} at ${formatIndex(mostExpensiveCity.rpp_all)}. That spread shows whether moving within the state could materially change housing and daily living costs before you even compare states.`;
 }
 
-export const dynamicParams = true;
+// dynamicParams=false (2026-04-23): unknown state slugs return real HTTP 404.
+// All states prebuilt via generateStaticParams. Avoids Next.js 16 soft-404
+// (HTTP 200 + 404 body) that was happening when root layout was dynamic.
+export const dynamicParams = false;
 export const revalidate = 86400;
 
 export function generateStaticParams() {

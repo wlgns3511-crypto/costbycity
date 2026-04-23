@@ -32,7 +32,10 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamicParams = true;
+// dynamicParams=false (2026-04-23): unknown city slugs return real HTTP 404.
+// All 387 metros prebuilt via generateStaticParams. Avoids Next.js 16 soft-404
+// (HTTP 200 + 404 body).
+export const dynamicParams = false;
 export const revalidate = 86400;
 
 export async function generateStaticParams() {
