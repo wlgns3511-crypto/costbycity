@@ -47,7 +47,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const rppAll = rpp.all || 100;
   const housingIdx = rpp.housing || rppAll;
   const goodsIdx = rpp.goods || rppAll;
-  const servicesIdx = rpp.services || rppAll;
+  // DB category is 'other_services' (not 'services') — see data/costliving.db + lib/db.ts rpp table.
+  // Pre-2026-04-23 this read rpp.services and silently fell back to rppAll for all 387 metros.
+  // Other pages (housing-breakdown, utility-bill, opengraph-image, CostIndex) already used other_services.
+  const servicesIdx = rpp.other_services || rppAll;
   const diff = formatPctDiff(rppAll);
 
   // Peer: same-state metro with a meaningfully different COL index (5%-80% diff)
