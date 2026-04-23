@@ -85,7 +85,11 @@ const LEGACY_NATIONAL: Record<string, string> = {
 
 interface Props { params: Promise<{ type: string }> }
 
-export const dynamicParams = true;
+// dynamicParams = false (2026-04-23): URLs not in generateStaticParams return
+// real HTTP 404 instead of Next.js 16's soft-404 (200 + 404 body). Mirrors the
+// /compare/[slugs] pattern set in Phase 2 P0. Without this, Google sees 23kB
+// pages at HTTP 200 for pruned state-variant URLs and treats them as live.
+export const dynamicParams = false;
 export const revalidate = 86400;
 
 function parseSlug(type: string): { rankingKey: string; stateCode?: string; stateName?: string } | null {

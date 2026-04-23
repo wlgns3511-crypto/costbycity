@@ -32,7 +32,13 @@ export const metadata: Metadata = {
     "Compare cost of living across 380+ US metro areas. Housing, groceries, utilities, and more. Data from the Bureau of Economic Analysis.",
   metadataBase: new URL(SITE_URL),
   alternates: { languages: ROOT_ALTERNATE_LANGUAGES },
-  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
+  // robots metadata intentionally omitted at root (2026-04-23).
+  // Default behavior (index, follow) is already Google's assumption — making
+  // it explicit at root caused a duplicate meta tag on not-found.tsx: Next.js
+  // 16 adds `<meta name="robots" content="noindex">` for notFound() responses
+  // but fails to override the root's `index, follow` tag, leaving BOTH in the
+  // HTML. Individual pages that need noindex (e.g., /embed/relocation) still
+  // declare it explicitly in their own metadata export.
   openGraph: { type: "website", siteName: SITE_NAME, locale: "en_US" },
   twitter: { card: "summary_large_image" },
   other: { "google-adsense-account": "ca-pub-5724806562146685" },
