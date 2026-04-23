@@ -358,8 +358,9 @@ export default async function CityPage({ params }: Props) {
             )}
             {acs.median_home_value && (
               <div className="border border-slate-200 rounded-lg p-4">
-                <div className="text-sm text-slate-500">Median Home Value</div>
+                <div className="text-sm text-slate-500">Median Home Price</div>
                 <div className="text-xl font-bold">{formatDollar(acs.median_home_value)}</div>
+                <div className="text-xs text-slate-400 mt-1">a.k.a. median home value (Census ACS)</div>
               </div>
             )}
             {acs.median_rent && (
