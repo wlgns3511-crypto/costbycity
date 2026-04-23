@@ -1,5 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
+import * as fs from "fs";
+import * as path from "path";
 import { getCityData, getTopComparisons } from "@/lib/db";
 import { formatDollar, formatIndex } from "@/lib/format";
 import { ComparisonTable } from "@/components/CostIndex";
@@ -18,8 +20,46 @@ function parseSlugs(slugs: string): [string, string] | null {
   return [match[1], match[2]];
 }
 
-const STATIC_COMPARISON_SLUGS = getTopComparisons(100).map((p) => [p.slugA, p.slugB].sort().join("-vs-"));
-const STATIC_COMPARISON_SET = new Set(STATIC_COMPARISON_SLUGS);
+// ── GSC whitelist loader (2026-04-23) ──────────────────────────────────────
+// Google-discovered compare URLs (clicks > 0 OR impr >= 3 over 28d).
+// Union with top-100 RPP-diff pairs ensures real-traffic URLs render as
+// proper pages instead of soft-404 (HTTP 200 + noindex + "Page Not Found").
+// Before this fix: 0/32 whitelist URLs overlapped with top-100 → every
+// user-sought compare page was being de-indexed by Google.
+function loadWhitelistedPairs(): { slugA: string; slugB: string }[] {
+  const wlPath = path.resolve(process.cwd(), "data", "compare-whitelist.json");
+  if (!fs.existsSync(wlPath)) return [];
+  try {
+    const raw = JSON.parse(fs.readFileSync(wlPath, "utf8"));
+    const seen = new Set<string>();
+    const out: { slugA: string; slugB: string }[] = [];
+    for (const e of raw.entries ?? []) {
+      const p = String(e.path || "")
+        .replace(/^\/compare\//, "")
+        .replace(/\/$/, "");
+      const m = p.match(/^(.+)-vs-(.+)$/);
+      if (!m) continue;
+      // Verify both metros exist in DB — otherwise static gen produces 404.
+      if (!getCityData(m[1]) || !getCityData(m[2])) continue;
+      const [a, b] = [m[1], m[2]].sort();
+      const key = `${a}-vs-${b}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push({ slugA: a, slugB: b });
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+const TOP_RPP_PAIRS = getTopComparisons(100);
+const WHITELIST_PAIRS = loadWhitelistedPairs();
+const STATIC_COMPARISON_SET = new Set<string>();
+for (const p of [...TOP_RPP_PAIRS, ...WHITELIST_PAIRS]) {
+  STATIC_COMPARISON_SET.add([p.slugA, p.slugB].sort().join("-vs-"));
+}
+const STATIC_COMPARISON_SLUGS = Array.from(STATIC_COMPARISON_SET);
 
 export const dynamicParams = false;
 export const revalidate = 86400;
