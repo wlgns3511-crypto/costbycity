@@ -125,11 +125,11 @@ export default async function CityPage({ params }: Props) {
             "@type": "Dataset",
             "name": `Cost of Living in ${metro.short_name} (${year})`,
             "description": `Cost of living index, housing costs, income, and rent data for the ${metro.short_name} metropolitan area.`,
-            "url": `https://costbycity.com/cities/${slug}`,
+            "url": `https://costbycity.com/cities/${slug}/`,
             "license": "https://creativecommons.org/publicdomain/zero/1.0/",
             "creator": { "@type": "Organization", "name": "DataPeek Facts", "url": "https://datapeekfacts.com" },
             "temporalCoverage": String(year),
-            "distribution": { "@type": "DataDownload", "encodingFormat": "text/html", "contentUrl": `https://costbycity.com/cities/${slug}` }
+            "distribution": { "@type": "DataDownload", "encodingFormat": "text/html", "contentUrl": `https://costbycity.com/cities/${slug}/` }
           })
         }}
       />
@@ -148,7 +148,7 @@ export default async function CityPage({ params }: Props) {
         ]}
         alternatives={compareCities.slice(0, 3).map((c) => ({
           label: c.short_name,
-          href: `/cities/${c.slug}`,
+          href: `/cities/${c.slug}/`,
           sublabel: formatIndex(c.rpp_all),
         }))}
         alternativesLabel="Comparable-cost metros"
@@ -451,7 +451,7 @@ export default async function CityPage({ params }: Props) {
       <FreshnessTag source="BEA Regional Price Parities + Census ACS + HUD FMR + BLS CPI" />
 
       <div className="flex items-center gap-4 mt-4">
-        <CiteButton title={`Cost of Living in ${metro.short_name}`} url={`https://costbycity.com/cities/${slug}`} source="CostByCity (BEA Data)" />
+        <CiteButton title={`Cost of Living in ${metro.short_name}`} url={`https://costbycity.com/cities/${slug}/`} source="CostByCity (BEA Data)" />
       </div>
 
           <EmbedButton url="https://costbycity.com" title="Data from CostByCity" site="CostByCity" siteUrl="https://costbycity.com" />
@@ -480,7 +480,7 @@ export default async function CityPage({ params }: Props) {
           {compareCities.map((c) => {
             const [a, b] = [slug, c.slug].sort();
             return (
-              <a key={c.fips} href={`/compare/${a}-vs-${b}`} className="text-emerald-600 hover:underline p-2 border border-slate-100 rounded">
+              <a key={c.fips} href={`/compare/${a}-vs-${b}/`} className="text-emerald-600 hover:underline p-2 border border-slate-100 rounded">
                 {metro.short_name} vs {c.short_name}
               </a>
             );
@@ -494,7 +494,7 @@ export default async function CityPage({ params }: Props) {
         statLabel="Cost Index"
         items={getRelatedCities(metro.state, slug, 8).map((c) => ({
           name: c.short_name,
-          href: `/cities/${c.slug}`,
+          href: `/cities/${c.slug}/`,
           stat: c.rpp_all.toFixed(1),
         }))}
       />

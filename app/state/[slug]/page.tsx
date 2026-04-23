@@ -147,7 +147,7 @@ export default async function StatePage({ params }: Props) {
 
       <div className="flex flex-wrap gap-2 mb-8">
         {states.map((s) => (
-          <a key={s} href={`/state/${s.toLowerCase()}`}
+          <a key={s} href={`/state/${s.toLowerCase()}/`}
             className={`px-3 py-1 rounded-full text-sm border ${s === state ? 'bg-emerald-600 text-white border-emerald-600' : 'border-slate-200 hover:bg-emerald-50'}`}>
             {s}
           </a>
@@ -156,7 +156,7 @@ export default async function StatePage({ params }: Props) {
 
       <div className="border rounded-lg overflow-hidden">
         {cities.map((c, i) => (
-          <a key={c.fips} href={`/cities/${c.slug}`}
+          <a key={c.fips} href={`/cities/${c.slug}/`}
             className="flex justify-between items-center p-3 hover:bg-slate-50 border-b border-slate-100">
             <span className="text-sm">
               <span className="text-slate-400 mr-2">{i + 1}.</span>

@@ -164,22 +164,22 @@ export default async function RankingPage({ params }: Props) {
   for (const [key, def] of Object.entries(RANKINGS)) {
     if (isState) {
       const slug = `${key}-in-${stateCodeToSlug(parsed.stateCode!)}`;
-      navItems.push({ key: slug, label: def.title(parsed.stateName).replace(` in ${parsed.stateName}`, ''), href: `/rankings/${slug}` });
+      navItems.push({ key: slug, label: def.title(parsed.stateName).replace(` in ${parsed.stateName}`, ''), href: `/rankings/${slug}/` });
     } else {
-      navItems.push({ key, label: def.title().replace(' in the US', ''), href: `/rankings/${key}` });
+      navItems.push({ key, label: def.title().replace(' in the US', ''), href: `/rankings/${key}/` });
     }
   }
 
   return (
     <div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema(title, `/rankings/${type}`, listItems)) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema(title, desc, `/rankings/${type}`)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema(title, `/rankings/${type}/`, listItems)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema(title, desc, `/rankings/${type}/`)) }} />
       <nav className="text-sm text-slate-500 mb-4">
         <a href="/" className="hover:underline">Home</a>
         {' / '}
         {isState ? (
           <>
-            <a href={`/rankings/${parsed.rankingKey}`} className="hover:underline">{r.title()}</a>
+            <a href={`/rankings/${parsed.rankingKey}/`} className="hover:underline">{r.title()}</a>
             {' / '}
             <span className="text-slate-800">{parsed.stateName}</span>
           </>
@@ -202,9 +202,9 @@ export default async function RankingPage({ params }: Props) {
 
       {isState && (
         <p className="text-sm text-slate-500 mb-4">
-          <a href={`/rankings/${parsed.rankingKey}`} className="text-emerald-600 hover:underline">View national rankings</a>
+          <a href={`/rankings/${parsed.rankingKey}/`} className="text-emerald-600 hover:underline">View national rankings</a>
           {' | '}
-          <a href={`/state/${parsed.stateCode!.toLowerCase()}`} className="text-emerald-600 hover:underline">All cities in {parsed.stateName}</a>
+          <a href={`/state/${parsed.stateCode!.toLowerCase()}/`} className="text-emerald-600 hover:underline">All cities in {parsed.stateName}</a>
         </p>
       )}
 
@@ -214,7 +214,7 @@ export default async function RankingPage({ params }: Props) {
           <span>{r.valueLabel}</span>
         </div>
         {cities.map((c: any, i: number) => (
-          <a key={c.slug} href={`/cities/${c.slug}`}
+          <a key={c.slug} href={`/cities/${c.slug}/`}
             className={`flex justify-between items-center p-3 ${r.hoverBg} border-b border-slate-100`}>
             <span className="text-sm">
               <span className="text-slate-400 mr-2">{i + 1}.</span>
@@ -232,7 +232,7 @@ export default async function RankingPage({ params }: Props) {
           <h2 className="text-xl font-bold mb-4">Browse by State</h2>
           <div className="flex flex-wrap gap-2">
             {getStatesWithMinMetros(3).map((sc) => (
-              <a key={sc} href={`/rankings/${parsed.rankingKey}-in-${stateCodeToSlug(sc)}`}
+              <a key={sc} href={`/rankings/${parsed.rankingKey}-in-${stateCodeToSlug(sc)}/`}
                 className="px-3 py-1 rounded-full text-sm border border-slate-200 hover:bg-emerald-50">
                 {stateFullName(sc)}
               </a>

@@ -22,7 +22,7 @@ export default function CitiesPage() {
             <h2 className="text-lg font-semibold text-emerald-800 mb-2">{state}</h2>
             <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3 text-sm">
               {metros.map((m) => (
-                <a key={m.fips} href={`/cities/${m.slug}`} className="py-1 text-slate-700 hover:text-emerald-600 hover:underline">
+                <a key={m.fips} href={`/cities/${m.slug}/`} className="py-1 text-slate-700 hover:text-emerald-600 hover:underline">
                   {m.short_name}
                 </a>
               ))}

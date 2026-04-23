@@ -197,10 +197,10 @@ export default async function ComparePage({ params }: Props) {
 
       <section className="mt-8">
         <div className="flex gap-4">
-          <a href={`/cities/${slugA}`} className="text-emerald-600 hover:underline">
+          <a href={`/cities/${slugA}/`} className="text-emerald-600 hover:underline">
             More about {metroA.short_name} &rarr;
           </a>
-          <a href={`/cities/${slugB}`} className="text-emerald-600 hover:underline">
+          <a href={`/cities/${slugB}/`} className="text-emerald-600 hover:underline">
             More about {metroB.short_name} &rarr;
           </a>
         </div>

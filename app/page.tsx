@@ -31,10 +31,10 @@ export default function Home() {
         subheading="Based on population & search interest"
         items={allCities.slice(0, 12).map(c => ({
           name: c.short_name,
-          href: `/cities/${c.slug}`,
+          href: `/cities/${c.slug}/`,
           stat: `Index ${c.rpp_all.toFixed(1)}`,
         }))}
-        viewAllHref="/rankings"
+        viewAllHref="/rankings/"
         viewAllLabel="View all rankings →"
       />
 
@@ -45,7 +45,7 @@ export default function Home() {
             {expensive.map((city, i) => (
               <a
                 key={city.fips}
-                href={`/cities/${city.slug}`}
+                href={`/cities/${city.slug}/`}
                 className="flex justify-between items-center p-3 hover:bg-slate-50 border-b border-slate-100"
               >
                 <span className="text-sm">
@@ -66,7 +66,7 @@ export default function Home() {
             {cheapest.map((city, i) => (
               <a
                 key={city.fips}
-                href={`/cities/${city.slug}`}
+                href={`/cities/${city.slug}/`}
                 className="flex justify-between items-center p-3 hover:bg-slate-50 border-b border-slate-100"
               >
                 <span className="text-sm">
@@ -88,7 +88,7 @@ export default function Home() {
           {states.map((s) => (
             <a
               key={s}
-              href={`/state/${s.toLowerCase()}`}
+              href={`/state/${s.toLowerCase()}/`}
               className="px-3 py-1 rounded-full text-sm border border-slate-200 hover:bg-emerald-50 hover:border-emerald-300"
             >
               {s}
@@ -102,7 +102,7 @@ export default function Home() {
         <div className="columns-2 md:columns-3 lg:columns-4 gap-4 text-sm">
           {allCities.map((city) => (
             <div key={city.fips} className="mb-1">
-              <a href={`/cities/${city.slug}`} className="text-slate-600 hover:text-emerald-600 hover:underline">
+              <a href={`/cities/${city.slug}/`} className="text-slate-600 hover:text-emerald-600 hover:underline">
                 {city.short_name}
               </a>
               <span className={`ml-1 text-xs ${city.rpp_all > 100 ? 'text-red-400' : 'text-green-400'}`}>

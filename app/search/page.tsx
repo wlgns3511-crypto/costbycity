@@ -57,7 +57,7 @@ export default async function SearchPage({ searchParams }: Props) {
               {results.map((m) => (
                 <a
                   key={m.slug}
-                  href={`/cities/${m.slug}`}
+                  href={`/cities/${m.slug}/`}
                   className="block p-4 border border-slate-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
                 >
                   <div className="font-semibold text-slate-900 mb-1">{m.short_name}</div>
@@ -79,7 +79,7 @@ export default async function SearchPage({ searchParams }: Props) {
             <h2 className="text-lg font-semibold mb-3 text-slate-700">Most Expensive Metro Areas</h2>
             <div className="grid gap-2 sm:grid-cols-2">
               {expensive.map((m) => (
-                <a key={m.slug} href={`/cities/${m.slug}`} className="p-3 border border-slate-200 rounded-lg hover:border-red-300 hover:bg-red-50 transition-all flex justify-between items-center">
+                <a key={m.slug} href={`/cities/${m.slug}/`} className="p-3 border border-slate-200 rounded-lg hover:border-red-300 hover:bg-red-50 transition-all flex justify-between items-center">
                   <span className="font-medium text-slate-900">{m.short_name}</span>
                   <span className="text-xs text-red-600 font-medium">{formatIndex(m.rpp_all)} ({formatPctDiff(m.rpp_all)} avg)</span>
                 </a>
@@ -90,7 +90,7 @@ export default async function SearchPage({ searchParams }: Props) {
             <h2 className="text-lg font-semibold mb-3 text-slate-700">Most Affordable Metro Areas</h2>
             <div className="grid gap-2 sm:grid-cols-2">
               {affordable.map((m) => (
-                <a key={m.slug} href={`/cities/${m.slug}`} className="p-3 border border-slate-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-all flex justify-between items-center">
+                <a key={m.slug} href={`/cities/${m.slug}/`} className="p-3 border border-slate-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-all flex justify-between items-center">
                   <span className="font-medium text-slate-900">{m.short_name}</span>
                   <span className="text-xs text-green-600 font-medium">{formatIndex(m.rpp_all)} ({formatPctDiff(m.rpp_all)} avg)</span>
                 </a>
