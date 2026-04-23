@@ -17,8 +17,7 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { getAllMetros, getAllStates, getStatesWithMinMetros, getComparisonsPage, getComparisonCount } from '../lib/db';
-import { stateCodeToSlug } from '../lib/us-states';
+import { getAllMetros, getAllStates } from '../lib/db';
 import { getAllPosts } from '../lib/blog';
 import { getAllGuides } from '../lib/guides';
 
@@ -67,13 +66,12 @@ for (const t of ['most-expensive-cities', 'most-affordable-cities', 'cheapest-ho
   add({ url: `${SITE_URL}/rankings/${t}/`, priority: '0.8', changefreq: 'monthly' });
 }
 
-// State-level rankings
-for (const sc of getStatesWithMinMetros(3)) {
-  const ss = stateCodeToSlug(sc);
-  for (const t of ['most-expensive-cities', 'most-affordable-cities', 'cheapest-housing', 'most-expensive-housing']) {
-    add({ url: `${SITE_URL}/rankings/${t}-in-${ss}/`, priority: '0.6', changefreq: 'monthly' });
-  }
-}
+// State-level rankings: DROPPED 2026-04-23 Step 1b prune.
+// Was 4 types × ~42 states = 168 URLs of thin state-filtered list templates.
+// GSC 28d: none in top-20 pages, high HCU scaled-template risk.
+// Per-state rankings will be folded into `/state/[slug]/` as inline
+// sections in a later pass (Step 3c), so one richer page replaces 4
+// thin ones. State-form `/rankings/*-in-[state]/` now returns 404.
 
 // Cities: dynamicParams=false → ALL metros (getAllMetros), EN only.
 // /es/cities/ × 387 thin-translation mirror DROPPED 2026-04-23 Tier F.

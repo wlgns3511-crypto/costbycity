@@ -3,12 +3,29 @@ import type { Metadata } from "next";
 import {
   getMostExpensiveCities, getCheapestCities, getCheapestHousing, getMostExpensiveHousing,
   getMostExpensiveCitiesInState, getCheapestCitiesInState, getCheapestHousingInState, getMostExpensiveHousingInState,
-  getStatesWithMinMetros,
 } from "@/lib/db";
 import { formatIndex } from "@/lib/format";
 import { itemListSchema, datasetSchema } from "@/lib/schema";
-import { stateSlugToCode, stateCodeToSlug, stateFullName } from "@/lib/us-states";
+import { stateCodeToSlug } from "@/lib/us-states";
 
+/**
+ * 2026-04-23 Step 1b prune — state variants removed.
+ *
+ * Previously: `/rankings/[type]-in-[state]/` generated 4 × 42 = 168 URLs.
+ * Same template as national rankings, just state-filtered. Classic HCU
+ * "scaled list template" signal. GSC 28d: zero appearances in top-20
+ * pages; avg site pos 32.7, CTR 0.12% — state variants almost certainly
+ * dead weight.
+ *
+ * Kept: 4 national slugs + 2 legacy national aliases. Invalid state-form
+ * URLs now return 404. Browse-by-state link block removed.
+ *
+ * Depth upgrade plan (Step 3c, separate session): fold per-state rankings
+ * into `/state/[slug]/` as inline sections so one richer page replaces
+ * 4 thin templates. Keeps the data accessible without cardinality bloat.
+ *
+ * State-filtered getters (…InState) are retained — reused by `/state/[slug]/`.
+ */
 const RANKING_TYPES = ['most-expensive-cities', 'most-affordable-cities', 'cheapest-housing', 'most-expensive-housing'] as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,44 +99,16 @@ function parseSlug(type: string): { rankingKey: string; stateCode?: string; stat
     return { rankingKey: type };
   }
 
-  // Try state pattern: {ranking-type}-in-{state-slug}
-  // Must try known ranking prefixes to avoid ambiguity with greedy/non-greedy matching
-  for (const rankKey of RANKING_TYPES) {
-    const prefix = `${rankKey}-in-`;
-    if (type.startsWith(prefix)) {
-      const stateSlug = type.slice(prefix.length);
-      const stateCode = stateSlugToCode(stateSlug);
-      if (stateCode) {
-        return { rankingKey: rankKey, stateCode, stateName: stateFullName(stateCode) };
-      }
-    }
-  }
-
+  // State-form slugs (e.g. "most-expensive-cities-in-texas") return null → 404.
+  // 2026-04-23 Step 1b prune: see file-level comment.
   return null;
 }
 
 export function generateStaticParams() {
+  // 2026-04-23 Step 1b: national only. State variants dropped — see file header.
   const params: { type: string }[] = [];
-
-  // National rankings (new slugs)
-  for (const key of Object.keys(RANKINGS)) {
-    params.push({ type: key });
-  }
-
-  // Legacy national slugs
-  for (const key of Object.keys(LEGACY_NATIONAL)) {
-    params.push({ type: key });
-  }
-
-  // State-level rankings
-  const states = getStatesWithMinMetros(3);
-  for (const stateCode of states) {
-    const stateSlug = stateCodeToSlug(stateCode);
-    for (const rankKey of RANKING_TYPES) {
-      params.push({ type: `${rankKey}-in-${stateSlug}` });
-    }
-  }
-
+  for (const key of Object.keys(RANKINGS)) params.push({ type: key });
+  for (const key of Object.keys(LEGACY_NATIONAL)) params.push({ type: key });
   return params;
 }
 
@@ -227,19 +216,11 @@ export default async function RankingPage({ params }: Props) {
         ))}
       </div>
 
-      {!isState && (
-        <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">Browse by State</h2>
-          <div className="flex flex-wrap gap-2">
-            {getStatesWithMinMetros(3).map((sc) => (
-              <a key={sc} href={`/rankings/${parsed.rankingKey}-in-${stateCodeToSlug(sc)}/`}
-                className="px-3 py-1 rounded-full text-sm border border-slate-200 hover:bg-emerald-50">
-                {stateFullName(sc)}
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
+      {/*
+        2026-04-23 Step 1b: removed "Browse by State" link cloud
+        (was seeding 42 state-variant links that now 404). Per-state
+        rankings will be folded into /state/[slug]/ in a later pass.
+      */}
     </div>
   );
 }
