@@ -1,0 +1,31 @@
+{
+  "source": "editorial — major metros with documented relocation search intent",
+  "criteria": "Pairs represent realistic cost-of-living comparisons people actually research (tech migration, Sunbelt relocation, retirement moves, intra-state alternatives). Replaces programmatic Top-N RPP-diff SQL which produced 99% nonsense cross-region pairs (e.g. SF vs random rural town).",
+  "updated": "2026-04-23",
+  "pairs": [
+    { "slugA": "san-francisco-oakland-fremont-ca", "slugB": "austin-round-rock-san-marcos-tx", "theme": "tech-migration" },
+    { "slugA": "san-francisco-oakland-fremont-ca", "slugB": "seattle-tacoma-bellevue-wa", "theme": "tech-migration" },
+    { "slugA": "san-francisco-oakland-fremont-ca", "slugB": "new-york-newark-jersey-city-ny-nj", "theme": "tech-migration" },
+    { "slugA": "seattle-tacoma-bellevue-wa", "slugB": "austin-round-rock-san-marcos-tx", "theme": "tech-migration" },
+    { "slugA": "san-jose-sunnyvale-santa-clara-ca", "slugB": "austin-round-rock-san-marcos-tx", "theme": "tech-migration" },
+
+    { "slugA": "new-york-newark-jersey-city-ny-nj", "slugB": "los-angeles-long-beach-anaheim-ca", "theme": "classic-metro" },
+    { "slugA": "new-york-newark-jersey-city-ny-nj", "slugB": "chicago-naperville-elgin-il-in", "theme": "classic-metro" },
+    { "slugA": "new-york-newark-jersey-city-ny-nj", "slugB": "miami-fort-lauderdale-west-palm-beach-fl", "theme": "finance-exodus" },
+    { "slugA": "new-york-newark-jersey-city-ny-nj", "slugB": "boston-cambridge-newton-ma-nh", "theme": "classic-metro" },
+    { "slugA": "los-angeles-long-beach-anaheim-ca", "slugB": "chicago-naperville-elgin-il-in", "theme": "classic-metro" },
+
+    { "slugA": "new-york-newark-jersey-city-ny-nj", "slugB": "atlanta-sandy-springs-roswell-ga", "theme": "sunbelt" },
+    { "slugA": "chicago-naperville-elgin-il-in", "slugB": "phoenix-mesa-chandler-az", "theme": "sunbelt" },
+    { "slugA": "new-york-newark-jersey-city-ny-nj", "slugB": "tampa-st-petersburg-clearwater-fl", "theme": "sunbelt" },
+    { "slugA": "los-angeles-long-beach-anaheim-ca", "slugB": "las-vegas-henderson-north-las-vegas-nv", "theme": "sunbelt" },
+
+    { "slugA": "austin-round-rock-san-marcos-tx", "slugB": "dallas-fort-worth-arlington-tx", "theme": "intra-state" },
+    { "slugA": "dallas-fort-worth-arlington-tx", "slugB": "houston-pasadena-the-woodlands-tx", "theme": "intra-state" },
+    { "slugA": "los-angeles-long-beach-anaheim-ca", "slugB": "san-diego-chula-vista-carlsbad-ca", "theme": "intra-state" },
+
+    { "slugA": "atlanta-sandy-springs-roswell-ga", "slugB": "charlotte-concord-gastonia-nc-sc", "theme": "regional" },
+    { "slugA": "washington-arlington-alexandria-dc-va-md-wv", "slugB": "baltimore-columbia-towson-md", "theme": "regional" },
+    { "slugA": "denver-aurora-centennial-co", "slugB": "salt-lake-city-murray-ut", "theme": "regional" }
+  ]
+}

@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import * as fs from "fs";
 import * as path from "path";
-import { getCityData, getTopComparisons } from "@/lib/db";
+import { getCityData } from "@/lib/db";
 import { formatDollar, formatIndex } from "@/lib/format";
 import { ComparisonTable } from "@/components/CostIndex";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -20,12 +20,16 @@ function parseSlugs(slugs: string): [string, string] | null {
   return [match[1], match[2]];
 }
 
-// ── GSC whitelist loader (2026-04-23) ──────────────────────────────────────
-// Google-discovered compare URLs (clicks > 0 OR impr >= 3 over 28d).
-// Union with top-100 RPP-diff pairs ensures real-traffic URLs render as
-// proper pages instead of soft-404 (HTTP 200 + noindex + "Page Not Found").
-// Before this fix: 0/32 whitelist URLs overlapped with top-100 → every
-// user-sought compare page was being de-indexed by Google.
+// ── Static compare set (2026-04-23 Phase 2 prune) ──────────────────────────
+// Replaced Top-100 RPP-diff SQL (99% nonsense cross-region pairs like
+// "SF vs random rural town" — zero search demand per GSC impression data)
+// with: curated editorial pairs (major metro rivalries with real relocation
+// search intent) + GSC-discovered whitelist (URLs Google actually crawled
+// with clicks>0 or impr>=3 over 28d).
+//
+// Rationale: TOP 50 GSC impression keywords contain ZERO pairwise "X vs Y"
+// queries — users search "cost of living in [city]" directly. Compare pages
+// serve minimal real demand; over-generation creates HCU thin-content risk.
 function loadWhitelistedPairs(): { slugA: string; slugB: string }[] {
   const wlPath = path.resolve(process.cwd(), "data", "compare-whitelist.json");
   if (!fs.existsSync(wlPath)) return [];
@@ -53,10 +57,34 @@ function loadWhitelistedPairs(): { slugA: string; slugB: string }[] {
   }
 }
 
-const TOP_RPP_PAIRS = getTopComparisons(100);
+function loadFeaturedPairs(): { slugA: string; slugB: string }[] {
+  const fpPath = path.resolve(process.cwd(), "data", "compare-featured.json");
+  if (!fs.existsSync(fpPath)) return [];
+  try {
+    const raw = JSON.parse(fs.readFileSync(fpPath, "utf8"));
+    const seen = new Set<string>();
+    const out: { slugA: string; slugB: string }[] = [];
+    for (const e of raw.pairs ?? []) {
+      const a = String(e.slugA || "");
+      const b = String(e.slugB || "");
+      if (!a || !b || a === b) continue;
+      if (!getCityData(a) || !getCityData(b)) continue;
+      const [s1, s2] = [a, b].sort();
+      const key = `${s1}-vs-${s2}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push({ slugA: s1, slugB: s2 });
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+const FEATURED_PAIRS = loadFeaturedPairs();
 const WHITELIST_PAIRS = loadWhitelistedPairs();
 const STATIC_COMPARISON_SET = new Set<string>();
-for (const p of [...TOP_RPP_PAIRS, ...WHITELIST_PAIRS]) {
+for (const p of [...FEATURED_PAIRS, ...WHITELIST_PAIRS]) {
   STATIC_COMPARISON_SET.add([p.slugA, p.slugB].sort().join("-vs-"));
 }
 const STATIC_COMPARISON_SLUGS = Array.from(STATIC_COMPARISON_SET);
