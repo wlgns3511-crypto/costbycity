@@ -100,7 +100,10 @@ export default function RootLayout({
             <a href="/" className="text-xl font-bold text-emerald-700">{SITE_NAME}</a>
             <nav className="flex gap-6 text-sm">
               <a href="/cities/" className="hover:text-emerald-600">Cities</a>
-              <a href="/compare/" className="hover:text-emerald-600">Compare</a>
+              {/* 2026-04-28 — 'Compare' nav 제거 (AdSense scaled-content remediation).
+                  /compare/* 트리는 4/18 doorway-thin 판단으로 noindex 처리됨.
+                  Sitewide layout 링크는 모든 indexable 페이지에 박히므로 AdSense
+                  리뷰어가 noindex 트리로 직행. 직접 URL 입력 시엔 페이지 그대로 작동. */}
               <a href="/guide/" className="hover:text-emerald-600">Guides</a>
               <a href="/blog/" className="hover:text-emerald-600">Articles</a>
               <a href="/es/" className="text-slate-400 hover:text-emerald-600 text-xs">ES</a>

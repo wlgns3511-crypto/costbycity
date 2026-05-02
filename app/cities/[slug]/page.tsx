@@ -27,6 +27,8 @@ import { RelatedEntities } from "@/components/upgrades/RelatedEntities";
 import { TableOfContents } from '@/components/upgrades/TableOfContents';
 import { AffordabilityCalc } from "@/components/tools/AffordabilityCalc";
 import { FeedbackButton } from "@/components/FeedbackButton";
+import { getCityFacts } from "@/lib/cost-facts";
+import { getCityCommentary, getCityTitle, getCityDescription } from "@/lib/cost-commentary";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -46,36 +48,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = getCityData(slug);
   if (!data) return {};
-  const { metro, rpp, acs, year } = data;
-  const rppAll = rpp.all || 100;
-  const housingIdx = rpp.housing || rppAll;
-  const goodsIdx = rpp.goods || rppAll;
-  // DB category is 'other_services' (not 'services') — see data/costliving.db + lib/db.ts rpp table.
-  // Pre-2026-04-23 this read rpp.services and silently fell back to rppAll for all 387 metros.
-  // Other pages (housing-breakdown, utility-bill, opengraph-image, CostIndex) already used other_services.
-  const servicesIdx = rpp.other_services || rppAll;
-  const diff = formatPctDiff(rppAll);
+  const { metro, year } = data;
 
-  // Peer: same-state metro with a meaningfully different COL index (5%-80% diff)
-  const sameState = getRelatedCities(metro.state, slug, 20);
-  const peer = sameState.find((p) => {
-    const d = Math.abs((p.rpp_all - rppAll) / rppAll);
-    return d > 0.03 && d < 0.8;
-  }) || sameState[0];
-
-  let title: string;
-  let description: string;
+  // 2026-04-29 HCU 5-chunk patch: title + description now slug-hash diversified
+  // by city status. 387 metros render across ~9 status profiles × 3 variants =
+  // ~27 distinct title shapes, defeating "{City} Cost of Living {Year}: Index X"
+  // template detection. Description gets 4 variants × 9 statuses similarly.
+  const facts = getCityFacts(slug);
   const dataVintage = `${year} BEA RPP + ACS data`;
-  if (peer) {
-    const pct = Math.round(((peer.rpp_all - rppAll) / peer.rpp_all) * 100);
-    const absPct = Math.abs(pct);
-    const dir = pct > 0 ? 'cheaper' : 'pricier';
-    title = `${metro.short_name} Cost of Living ${year}: Index ${formatIndex(rppAll)} vs ${peer.short_name} ${formatIndex(peer.rpp_all)}`;
-    description = `${metro.short_name} metro COL index ${formatIndex(rppAll)} (${diff} US avg) — ${absPct}% ${dir} than ${peer.short_name}. Housing ${formatIndex(housingIdx)}, goods ${formatIndex(goodsIdx)}, services ${formatIndex(servicesIdx)}${acs?.median_rent ? `, median rent ${formatDollar(acs.median_rent)}/mo` : ''}. ${year} data.`;
-  } else {
-    title = `${metro.short_name} Cost of Living ${year}: Index ${formatIndex(rppAll)} (${diff} US)`;
-    description = `${metro.short_name}, ${metro.state}: COL index ${formatIndex(rppAll)} (${diff} US avg). Housing ${formatIndex(housingIdx)}, goods ${formatIndex(goodsIdx)}, services ${formatIndex(servicesIdx)}${acs?.median_rent ? `, median rent ${formatDollar(acs.median_rent)}/mo` : ''}. ${year} data.`;
-  }
+  const title = facts ? getCityTitle(facts) : `${metro.short_name} Cost of Living`;
+  const description = facts ? getCityDescription(facts) : `${metro.short_name}, ${metro.state} cost of living per BEA RPP ${year}.`;
+
+  // Peer count for the gate check (kept from previous logic).
+  const sameState = getRelatedCities(metro.state, slug, 20);
   const gate = getDbPageGate({
     alternativeLinkCount: Math.max(3, sameState.slice(0, 3).length),
     dataVintage,
@@ -195,6 +180,23 @@ export default async function CityPage({ params }: Props) {
       />
 
       <InsightBlock entityName={metro.short_name} insights={getCostInsights(metro.short_name, rpp, acs ?? null)} />
+
+      {/* ── Cost Snapshot — Layer 2 status-aware narrative (HCU 5-chunk, 2026-04-29). */}
+      {(() => {
+        const facts = getCityFacts(slug);
+        if (!facts) return null;
+        const c = getCityCommentary(facts);
+        return (
+          <section className="my-8 p-5 md:p-6 bg-white border border-slate-200 rounded-xl shadow-sm" data-status={c.status}>
+            <h2 className="text-xl md:text-2xl font-bold mb-3 text-slate-900">{c.headline}</h2>
+            <p className="text-slate-700 leading-relaxed mb-3">{c.fact}</p>
+            <p className="text-slate-700 leading-relaxed mb-3">{c.context}</p>
+            <p className="text-slate-600 leading-relaxed text-sm border-l-4 border-emerald-300 pl-4 py-1 bg-emerald-50/50">
+              <strong className="text-emerald-700">What this means:</strong> {c.implication}
+            </p>
+          </section>
+        );
+      })()}
 
       <TableOfContents />
 
@@ -481,19 +483,8 @@ export default async function CityPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-xl font-bold mb-3">Compare {metro.short_name} With</h2>
-        <div className="grid sm:grid-cols-2 gap-2 text-sm">
-          {compareCities.map((c) => {
-            const [a, b] = [slug, c.slug].sort();
-            return (
-              <a key={c.fips} href={`/compare/${a}-vs-${b}/`} className="text-emerald-600 hover:underline p-2 border border-slate-100 rounded">
-                {metro.short_name} vs {c.short_name}
-              </a>
-            );
-          })}
-        </div>
-      </section>
+      {/* 2026-04-28 — 'Compare {metro} With' 위젯 제거 (AdSense scaled-content remediation, /compare/* noindex).
+          RelatedEntities 위젯이 동일 도시들로 연결되니 사용자 탐색 경로 유지됨. */}
 
       <RelatedEntities
         entityName={metro.short_name}

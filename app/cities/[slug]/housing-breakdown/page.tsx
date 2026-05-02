@@ -486,8 +486,8 @@ export default async function HousingBreakdownPage({
         </section>
       )}
 
-      {/* Parent cross-link + relocation calc */}
-      <section className="my-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Parent cross-link */}
+      <section className="my-10">
         <a
           href={`/cities/${slug}/`}
           className="block p-5 bg-white border border-slate-200 rounded-xl hover:border-blue-400 hover:shadow-sm transition"
@@ -503,21 +503,7 @@ export default async function HousingBreakdownPage({
             context.
           </div>
         </a>
-        <a
-          href="/compare/"
-          className="block p-5 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 hover:shadow-sm transition"
-        >
-          <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">
-            Metro vs. Metro
-          </div>
-          <div className="text-base font-bold text-slate-900 mb-1">
-            Compare {metro.short_name} to another city →
-          </div>
-          <div className="text-sm text-slate-600">
-            Side-by-side housing, utilities, goods, and services for any two
-            metros.
-          </div>
-        </a>
+        {/* 2026-04-28 — 'Metro vs Metro' /compare/ 카드 제거 (AdSense scaled-content remediation) */}
       </section>
 
       {/* FAQ */}

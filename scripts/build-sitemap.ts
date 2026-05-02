@@ -61,9 +61,27 @@ for (const g of getAllGuides()) {
   add({ url: `${SITE_URL}/guide/${g.slug}/`, lastmod: g.updatedAt || NOW, priority: '0.7', changefreq: 'monthly' });
 }
 
-// National rankings
-for (const t of ['most-expensive-cities', 'most-affordable-cities', 'cheapest-housing', 'most-expensive-housing']) {
+// National rankings — expanded 2026-04-29 from 4 to 12 types (HCU 5-chunk).
+add({ url: `${SITE_URL}/rankings/`, priority: '0.85', changefreq: 'monthly' });
+for (const t of [
+  // Original 4 (kept for legacy URL stability)
+  'most-expensive-cities', 'most-affordable-cities',
+  'cheapest-housing', 'most-expensive-housing',
+  // New 8 added 2026-04-29
+  'hidden-gems', 'rent-burden-highest', 'fastest-rising', 'fastest-falling',
+  'housing-heavy', 'income-leaders', 'value-leaders', 'cheapest-utilities',
+]) {
   add({ url: `${SITE_URL}/rankings/${t}/`, priority: '0.8', changefreq: 'monthly' });
+}
+
+// Topic-based insights (paired ranking tables) — added 2026-04-29.
+// Counterpart to /rankings/ — same data organized by topic instead of axis.
+add({ url: `${SITE_URL}/insights/`, priority: '0.85', changefreq: 'monthly' });
+for (const t of [
+  'housing-vs-goods', 'rent-burden', 'hidden-gems',
+  'fastest-changing', 'dollar-stretch', 'real-wages',
+]) {
+  add({ url: `${SITE_URL}/insights/${t}/`, priority: '0.8', changefreq: 'monthly' });
 }
 
 // State-level rankings: DROPPED 2026-04-23 Step 1b prune.
@@ -102,46 +120,52 @@ for (const s of getAllStates()) {
 // clicks (whitelist) or (b) realistic relocation search intent (featured).
 // Doorway risk stays low because we do not advertise the full city×city
 // matrix — only ~40 curated pairs.
-{
-  const seen = new Set<string>();
-  const addPair = (key: string, priority: string) => {
-    if (seen.has(key)) return;
-    seen.add(key);
-    add({ url: `${SITE_URL}/compare/${key}/`, priority, changefreq: 'monthly' });
-  };
-
-  // Featured editorial pairs (higher priority — classic metro rivalries)
-  try {
-    const fpJson = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '..', 'data', 'compare-featured.json'), 'utf8'),
-    );
-    for (const e of (fpJson.pairs ?? [])) {
-      const a = String(e.slugA || '');
-      const b = String(e.slugB || '');
-      if (!a || !b || a === b) continue;
-      const [s1, s2] = [a, b].sort();
-      addPair(`${s1}-vs-${s2}`, '0.7');
-    }
-  } catch {
-    // featured missing is non-fatal
-  }
-
-  // GSC-discovered whitelist pairs
-  try {
-    const wlJson = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '..', 'data', 'compare-whitelist.json'), 'utf8'),
-    );
-    for (const e of (wlJson.entries ?? [])) {
-      const p = String(e.path || '').replace(/^\/compare\//, '').replace(/\/$/, '');
-      const m = p.match(/^(.+)-vs-(.+)$/);
-      if (!m) continue;
-      const [a, b] = [m[1], m[2]].sort();
-      addPair(`${a}-vs-${b}`, '0.6');
-    }
-  } catch {
-    // whitelist missing is non-fatal
-  }
-}
+// ─── /compare/ pairs DROPPED 2026-04-26 (AdSense scaled-content remediation) ──
+// Precedent: nameblooms /middle-names/ AdSense policy violation 2026-04-26.
+// page.tsx now sets robots: {index:false, follow:true}. Announcing noindex'd
+// derivative pages in sitemap is a contradiction + crawl-budget waste.
+// Featured + GSC whitelist pairs both dropped (~43 derivative URLs removed).
+// Pages still render (dynamicParams=false, 404-safe) for direct visitors.
+// {
+//   const seen = new Set<string>();
+//   const addPair = (key: string, priority: string) => {
+//     if (seen.has(key)) return;
+//     seen.add(key);
+//     add({ url: `${SITE_URL}/compare/${key}/`, priority, changefreq: 'monthly' });
+//   };
+//
+//   // Featured editorial pairs (higher priority — classic metro rivalries)
+//   try {
+//     const fpJson = JSON.parse(
+//       fs.readFileSync(path.resolve(__dirname, '..', 'data', 'compare-featured.json'), 'utf8'),
+//     );
+//     for (const e of (fpJson.pairs ?? [])) {
+//       const a = String(e.slugA || '');
+//       const b = String(e.slugB || '');
+//       if (!a || !b || a === b) continue;
+//       const [s1, s2] = [a, b].sort();
+//       addPair(`${s1}-vs-${s2}`, '0.7');
+//     }
+//   } catch {
+//     // featured missing is non-fatal
+//   }
+//
+//   // GSC-discovered whitelist pairs
+//   try {
+//     const wlJson = JSON.parse(
+//       fs.readFileSync(path.resolve(__dirname, '..', 'data', 'compare-whitelist.json'), 'utf8'),
+//     );
+//     for (const e of (wlJson.entries ?? [])) {
+//       const p = String(e.path || '').replace(/^\/compare\//, '').replace(/\/$/, '');
+//       const m = p.match(/^(.+)-vs-(.+)$/);
+//       if (!m) continue;
+//       const [a, b] = [m[1], m[2]].sort();
+//       addPair(`${a}-vs-${b}`, '0.6');
+//     }
+//   } catch {
+//     // whitelist missing is non-fatal
+//   }
+// }
 
 // ─── Cardinality guard ────────────────────────────────────────────────────
 if (entries.length > 1800 && !process.env.SITEMAP_LARGE_OK) {

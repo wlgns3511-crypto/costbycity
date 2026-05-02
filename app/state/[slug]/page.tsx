@@ -10,6 +10,9 @@ import { CrossSiteLinks } from "@/components/CrossSiteLinks";
 import { StateRich } from '@/components/state/StateRich';
 import { FreshnessTag } from "@/components/FreshnessTag";
 import { TrustBlock } from "@/components/upgrades/TrustBlock";
+import { getStateFactsByCode } from "@/lib/cost-facts";
+import { getStateNarrative } from "@/lib/cost-commentary";
+import { stateFullName } from "@/lib/us-states";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -116,20 +119,43 @@ export default async function StatePage({ params }: Props) {
 
       <EditorNote note={`Cost of living in ${state} varies widely across metro areas. Indices above 100 mean higher than the national average, while below 100 means more affordable. These figures reflect regional price parities from the BLS.`} />
 
-      <section className="grid gap-4 md:grid-cols-2 mb-6">
-        <article className="rounded-xl border border-slate-200 p-5">
-          <h2 className="text-lg font-bold text-slate-900 mb-2">What the statewide spread means</h2>
-          <p className="text-sm leading-6 text-slate-600">
-            State pages are useful because most relocation decisions start at the state level, then narrow to one or two metros. In {state}, the distance between the cheapest and priciest metro is a quick way to judge whether moving within the same state can materially change your housing and daily spending.
-          </p>
-        </article>
-        <article className="rounded-xl border border-slate-200 p-5">
-          <h2 className="text-lg font-bold text-slate-900 mb-2">How to use this page</h2>
-          <p className="text-sm leading-6 text-slate-600">
-            Start with the statewide ranking to find the outliers, then click into the cheapest and most expensive metros to inspect housing, rent, and income context. That gives you a faster read on whether the state has one unusually expensive hub or broad cost pressure across most metros.
-          </p>
-        </article>
-      </section>
+      {(() => {
+        const sf = getStateFactsByCode(state);
+        if (!sf) return null;
+        const sn = getStateNarrative(state, stateFullName(state), sf);
+        return (
+          <section className="my-8 p-5 md:p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+            <h2 className="text-xl md:text-2xl font-bold mb-3 text-slate-900">{sn.headline}</h2>
+            <p className="text-slate-700 leading-relaxed mb-3">{sn.fact}</p>
+            <p className="text-slate-700 leading-relaxed mb-3">{sn.context}</p>
+            <p className="text-slate-600 leading-relaxed text-sm border-l-4 border-emerald-300 pl-4 py-1 bg-emerald-50/50">
+              <strong className="text-emerald-700">What this means:</strong> {sn.implication}
+            </p>
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
+                <div className="text-xs text-slate-500 uppercase tracking-wide">Avg Cost Index</div>
+                <div className="text-lg font-bold text-slate-900">{formatIndex(sf.avgRPP)}</div>
+                <div className="text-xs text-slate-500">{sf.vsNationalAvg >= 0 ? '+' : ''}{sf.vsNationalAvg.toFixed(1)} vs US</div>
+              </div>
+              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
+                <div className="text-xs text-slate-500 uppercase tracking-wide">In-State Spread</div>
+                <div className="text-lg font-bold text-slate-900">{sf.rppSpread.toFixed(1)} pts</div>
+                <div className="text-xs text-slate-500">top minus bottom</div>
+              </div>
+              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
+                <div className="text-xs text-slate-500 uppercase tracking-wide">Above-Avg Metros</div>
+                <div className="text-lg font-bold text-red-700">{sf.expensiveCount}</div>
+                <div className="text-xs text-slate-500">RPP ≥ 105</div>
+              </div>
+              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3">
+                <div className="text-xs text-slate-500 uppercase tracking-wide">Below-Avg Metros</div>
+                <div className="text-lg font-bold text-green-700">{sf.affordableCount}</div>
+                <div className="text-xs text-slate-500">RPP ≤ 95</div>
+              </div>
+            </div>
+          </section>
+        );
+      })()}
 
       {cheapestCity && mostExpensiveCity && (
         <section className="mb-6">

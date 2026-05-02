@@ -52,10 +52,7 @@ export default function GuidesIndex() {
             <Link href="/cities/" className="text-emerald-700 hover:underline font-medium">Browse cities →</Link>
             <span className="text-slate-500"> COL data by US metro</span>
           </li>
-          <li>
-            <Link href="/compare/" className="text-emerald-700 hover:underline font-medium">Compare two cities →</Link>
-            <span className="text-slate-500"> side-by-side cost analysis</span>
-          </li>
+          {/* 2026-04-28 — 'Compare two cities' bullet 제거 (AdSense scaled-content remediation) */}
         </ul>
       </section>
     </div>
