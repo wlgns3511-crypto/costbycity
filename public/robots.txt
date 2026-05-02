@@ -3,6 +3,11 @@ Allow: /
 Disallow: /api/
 Disallow: /_next/
 Disallow: /embed/
+Disallow: /search/
+Disallow: /410/
+# 2026-05-02 V3 — middleware HARD 410 (legacy/synthetic crawler probe paths)
+Disallow: /es/
+Disallow: /states/
 # 2026-04-28 — AdSense scaled-content remediation: /compare/* (4/18 doorway-thin noindex)
 Disallow: /compare/
 
