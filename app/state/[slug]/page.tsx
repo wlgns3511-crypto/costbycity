@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getMetrosByStateCode, getAllStates } from "@/lib/db";
+import { getMetrosByStateCode, getAllStates, getRPPHistory } from "@/lib/db";
 import { buildDbPageRobots, buildTrustUpdatedLabel, getDbPageGate, getReviewedAt, getReviewedBy, METHODOLOGY_URL } from "@/lib/db-page";
 import { formatIndex, formatPctDiffShort, getDataYear } from "@/lib/format";
 import { EditorNote } from "@/components/EditorNote";
@@ -13,6 +13,7 @@ import { TrustBlock } from "@/components/upgrades/TrustBlock";
 import { getStateFactsByCode } from "@/lib/cost-facts";
 import { getStateNarrative } from "@/lib/cost-commentary";
 import { stateFullName } from "@/lib/us-states";
+import { RppTrendChart, type RppSeries } from "@/components/RppTrendChart";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -153,6 +154,41 @@ export default async function StatePage({ params }: Props) {
                 <div className="text-xs text-slate-500">RPP ≤ 95</div>
               </div>
             </div>
+          </section>
+        );
+      })()}
+
+      {/* HCU 5-chunk V3 Phase C wire-up — state-aggregate RPP trend (avg of metros, weighted equally). */}
+      {(() => {
+        const histByYear = new Map<number, number[]>();
+        for (const c of cities) {
+          const h = getRPPHistory(c.fips);
+          for (const p of h) {
+            if (!histByYear.has(p.year)) histByYear.set(p.year, []);
+            histByYear.get(p.year)!.push(p.value);
+          }
+        }
+        if (histByYear.size === 0) return null;
+        const points = Array.from(histByYear.entries())
+          .map(([year, vals]) => ({
+            year,
+            value: Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2)),
+          }))
+          .sort((a, b) => a.year - b.year);
+        if (points.length < 2) return null;
+        const series: RppSeries[] = [
+          { label: `${state} state average (n=${cities.length})`, color: "#0ea5e9", points },
+        ];
+        return (
+          <section className="my-6">
+            <RppTrendChart
+              title={`${state} RPP all-items, metro-average ${points[0].year}–${points[points.length - 1].year}`}
+              series={series}
+              height={220}
+            />
+            <p className="mt-2 text-xs text-slate-500">
+              Equal-weighted average of {cities.length} {state} metros across each release year (BEA Regional Price Parities, US average = 100).
+            </p>
           </section>
         );
       })()}

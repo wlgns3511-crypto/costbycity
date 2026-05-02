@@ -29,6 +29,10 @@ import { AffordabilityCalc } from "@/components/tools/AffordabilityCalc";
 import { FeedbackButton } from "@/components/FeedbackButton";
 import { getCityFacts } from "@/lib/cost-facts";
 import { getCityCommentary, getCityTitle, getCityDescription } from "@/lib/cost-commentary";
+import { RppTrendChart, type RppSeries } from "@/components/RppTrendChart";
+import { AffordabilityScoreCard } from "@/components/AffordabilityScoreCard";
+import { RealWageEquivalent } from "@/components/RealWageEquivalent";
+import { EQUIVALENT_PAIRS } from "@/lib/equivalent-pairs";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -242,6 +246,57 @@ export default async function CityPage({ params }: Props) {
         groceriesIndex={rpp.goods || 100}
         medianIncome={acs?.median_income ?? null}
       />
+
+      {/* HCU 5-chunk V3 Phase C wire-up — RPP 16-yr trend, affordability gauge, real-wage equivalent. */}
+      {history.length > 1 && (() => {
+        const trendSeries: RppSeries[] = [
+          {
+            label: `${metro.short_name} RPP all-items`,
+            color: "#0ea5e9",
+            points: history.map((h) => ({ year: h.year, value: h.value })),
+          },
+        ];
+        return (
+          <section className="my-8">
+            <RppTrendChart
+              title={`${metro.short_name} RPP all-items, 2008–${history[history.length - 1].year}`}
+              series={trendSeries}
+              height={240}
+            />
+            <p className="mt-2 text-xs text-slate-500">
+              16-year BEA Regional Price Parity trajectory (US average = 100). See{" "}
+              <a className="text-blue-700 underline" href="/glossary/regional-price-parity/">RPP glossary</a> ·{" "}
+              <a className="text-blue-700 underline" href="/trend/rpp-all/">cross-metro trend</a>.
+            </p>
+          </section>
+        );
+      })()}
+
+      {acs?.median_income && acs?.median_rent && (rpp.housing || rpp.all) && (
+        <AffordabilityScoreCard
+          medianIncome={acs.median_income}
+          medianRent={acs.median_rent}
+          rppHousing={rpp.housing || rpp.all || 100}
+          cityName={metro.short_name}
+        />
+      )}
+
+      {(() => {
+        const pair = EQUIVALENT_PAIRS.find((p) => p.slug_a === slug || p.slug_b === slug);
+        if (!pair) return null;
+        const primary: "a-to-b" | "b-to-a" = pair.slug_a === slug ? "a-to-b" : "b-to-a";
+        return (
+          <section className="my-8">
+            <h2 className="mb-2 text-xl font-bold text-slate-900">Real-wage equivalent for {metro.short_name}</h2>
+            <p className="mb-3 text-sm text-slate-600">
+              Salary you&apos;d need in the matched destination metro to keep equal purchasing power. See the{" "}
+              <a className="text-blue-700 underline" href={`/equivalent/${pair.pair_slug}/`}>full pair page</a> for the 16-year RPP trend
+              and ACS income context.
+            </p>
+            <RealWageEquivalent pair={pair} primary={primary} />
+          </section>
+        );
+      })()}
 
       {/* Area Overview */}
       <section className="mb-6">

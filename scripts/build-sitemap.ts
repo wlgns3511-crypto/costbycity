@@ -20,6 +20,8 @@ import * as path from 'path';
 import { getAllMetros, getAllStates } from '../lib/db';
 import { getAllPosts } from '../lib/blog';
 import { getAllGuides } from '../lib/guides';
+import { GLOSSARY } from '../lib/glossary-data';
+import { EQUIVALENT_PAIRS } from '../lib/equivalent-pairs';
 
 const SITE_URL = 'https://costbycity.com';
 const NOW = new Date().toISOString().split('T')[0];
@@ -114,6 +116,35 @@ for (const s of getAllStates()) {
   add({ url: `${SITE_URL}/state/${s.toLowerCase()}/`, priority: '0.7', changefreq: 'monthly' });
 }
 
+// HCU 5-chunk V3 Phase D — depth-injection routes (2026-05-02).
+// All routes are dynamicParams=false or force-static; SSG safe; no synthesis.
+
+// Glossary index + 50 entries (~1252 chars body each, citation network)
+add({ url: `${SITE_URL}/glossary/`, priority: '0.85', changefreq: 'monthly' });
+for (const e of GLOSSARY) {
+  add({ url: `${SITE_URL}/glossary/${e.slug}/`, priority: '0.7', changefreq: 'monthly' });
+}
+
+// Equivalent (real-wage) index + 200 city pairs (top RPP-gap pool)
+add({ url: `${SITE_URL}/equivalent/`, priority: '0.85', changefreq: 'monthly' });
+for (const p of EQUIVALENT_PAIRS) {
+  add({ url: `${SITE_URL}/equivalent/${p.pair_slug}/`, priority: '0.7', changefreq: 'monthly' });
+}
+
+// Tools index + two calculators
+add({ url: `${SITE_URL}/tools/`, priority: '0.85', changefreq: 'monthly' });
+add({ url: `${SITE_URL}/tools/affordability-calculator/`, priority: '0.8', changefreq: 'monthly' });
+add({ url: `${SITE_URL}/tools/relocation-cost/`, priority: '0.8', changefreq: 'monthly' });
+
+// Trend index + 4 metric pages (RPP all/housing, PCE deflator, real-vs-nominal)
+add({ url: `${SITE_URL}/trend/`, priority: '0.85', changefreq: 'monthly' });
+for (const m of ['rpp-all', 'rpp-housing', 'pce-deflator', 'real-vs-nominal']) {
+  add({ url: `${SITE_URL}/trend/${m}/`, priority: '0.75', changefreq: 'monthly' });
+}
+
+// Sources roster
+add({ url: `${SITE_URL}/sources/`, priority: '0.8', changefreq: 'monthly' });
+
 // Compare pages: featured (editorial) + whitelist (GSC-discovered)
 // 2026-04-23 Phase 2 P0: dropped Top-100 RPP-diff SQL (99/100 junk pairs).
 // Sitemap now announces only pages with either (a) proven GSC impressions/
@@ -168,10 +199,13 @@ for (const s of getAllStates()) {
 // }
 
 // ─── Cardinality guard ────────────────────────────────────────────────────
-if (entries.length > 1800 && !process.env.SITEMAP_LARGE_OK) {
+// HCU 5-chunk V3 Phase D (2026-05-02): budget bumped 1.8K → 2.2K to fit
+// glossary 50 + equivalent 200 + tools/trend/sources (~261 new URLs).
+// Anything beyond 2.2K probably means /es/* or /compare/* leaked back in.
+if (entries.length > 2200 && !process.env.SITEMAP_LARGE_OK) {
   throw new Error(
-    `costbycity sitemap has ${entries.length.toLocaleString()} URLs — Tier F budget is ~1.44K.\n` +
-      `Did /es/cities/ (387) get re-added?\n` +
+    `costbycity sitemap has ${entries.length.toLocaleString()} URLs — V3 Phase D budget is ~1.7K.\n` +
+      `Did /es/cities/ (387) or /compare/* re-enter?\n` +
       `That's exactly the loop that caused the original cardinality collapse.\n` +
       `Run with SITEMAP_LARGE_OK=1 if you genuinely meant to expand the tier.`,
   );

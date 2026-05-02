@@ -10,6 +10,7 @@ import { EditorNote } from "@/components/EditorNote";
 import { AdSlot } from "@/components/AdSlot";
 import { FeedbackButton } from "@/components/FeedbackButton";
 import { CrossSiteLinks } from "@/components/CrossSiteLinks";
+import { ClimateEnergyCost } from "@/components/ClimateEnergyCost";
 
 export const dynamicParams = false;
 export const revalidate = false;
@@ -359,6 +360,14 @@ export default async function UtilityBillPage({
       <EditorNote
         note={`Utility estimates combine BEA's Regional Price Parity (${formatIndex(utilities)}) with EIA residential baselines for ${metro.short_name}'s climate zone (${climate.zone}). Actual bills vary by home size, insulation age, HVAC efficiency, and household usage patterns — expect ±30% individual variance around these metro averages.`}
       />
+
+      {/* HCU 5-chunk V3 Phase C wire-up — NOAA HDD/CDD × EIA residential rate. */}
+      <ClimateEnergyCost state={metro.state} cityName={metro.short_name} />
+      <p className="mt-2 text-xs text-slate-500">
+        HVAC kWh from <a className="text-blue-700 underline" href="/glossary/heating-degree-day-hdd/">HDD</a> +{" "}
+        <a className="text-blue-700 underline" href="/glossary/cooling-degree-day-cdd/">CDD</a> × state-average residential rate (
+        <a className="text-blue-700 underline" href="/glossary/residential-electricity-rate/">EIA Form EIA-861M</a>).
+      </p>
 
       <AdSlot id="utility-bill-top" />
 

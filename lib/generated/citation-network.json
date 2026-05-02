@@ -1,0 +1,838 @@
+{
+  "generated_at": "2026-05-02T09:07:01.473Z",
+  "stats": {
+    "totalEntries": 50,
+    "totalRelatedEdges": 187,
+    "totalCitations": 61,
+    "uniqueAuthorities": 15,
+    "topHub": "Regional Price Parity (RPP)",
+    "topAuthority": "bea.gov"
+  },
+  "clusters": [
+    {
+      "category": "bea",
+      "entryCount": 12,
+      "internalEdges": 33,
+      "externalEdges": 13
+    },
+    {
+      "category": "census",
+      "entryCount": 10,
+      "internalEdges": 26,
+      "externalEdges": 7
+    },
+    {
+      "category": "hud",
+      "entryCount": 10,
+      "internalEdges": 27,
+      "externalEdges": 13
+    },
+    {
+      "category": "general",
+      "entryCount": 10,
+      "internalEdges": 14,
+      "externalEdges": 21
+    },
+    {
+      "category": "energy",
+      "entryCount": 8,
+      "internalEdges": 31,
+      "externalEdges": 2
+    }
+  ],
+  "top_hubs": [
+    {
+      "slug": "regional-price-parity",
+      "term": "Regional Price Parity (RPP)",
+      "category": "bea",
+      "inDegree": 15,
+      "outDegree": 5,
+      "total": 20
+    },
+    {
+      "slug": "cost-burdened-renter",
+      "term": "Cost-Burdened Renter",
+      "category": "census",
+      "inDegree": 11,
+      "outDegree": 5,
+      "total": 16
+    },
+    {
+      "slug": "american-community-survey",
+      "term": "American Community Survey (ACS)",
+      "category": "census",
+      "inDegree": 8,
+      "outDegree": 5,
+      "total": 13
+    },
+    {
+      "slug": "area-median-income",
+      "term": "Area Median Income (AMI)",
+      "category": "hud",
+      "inDegree": 8,
+      "outDegree": 5,
+      "total": 13
+    },
+    {
+      "slug": "median-rent",
+      "term": "Median Gross Rent",
+      "category": "census",
+      "inDegree": 9,
+      "outDegree": 4,
+      "total": 13
+    },
+    {
+      "slug": "median-household-income",
+      "term": "Median Household Income",
+      "category": "census",
+      "inDegree": 9,
+      "outDegree": 4,
+      "total": 13
+    },
+    {
+      "slug": "affordability-score",
+      "term": "Affordability Score",
+      "category": "general",
+      "inDegree": 7,
+      "outDegree": 5,
+      "total": 12
+    },
+    {
+      "slug": "fair-market-rent",
+      "term": "Fair Market Rent (FMR)",
+      "category": "hud",
+      "inDegree": 7,
+      "outDegree": 5,
+      "total": 12
+    },
+    {
+      "slug": "pce-price-index",
+      "term": "PCE Price Index",
+      "category": "bea",
+      "inDegree": 7,
+      "outDegree": 5,
+      "total": 12
+    },
+    {
+      "slug": "btu",
+      "term": "British Thermal Unit (BTU)",
+      "category": "energy",
+      "inDegree": 7,
+      "outDegree": 4,
+      "total": 11
+    },
+    {
+      "slug": "kwh",
+      "term": "Kilowatt-Hour (kWh)",
+      "category": "energy",
+      "inDegree": 7,
+      "outDegree": 4,
+      "total": 11
+    },
+    {
+      "slug": "real-personal-income",
+      "term": "Real Personal Income (RPCPI)",
+      "category": "bea",
+      "inDegree": 7,
+      "outDegree": 4,
+      "total": 11
+    },
+    {
+      "slug": "rpp-housing",
+      "term": "RPP: Housing",
+      "category": "bea",
+      "inDegree": 5,
+      "outDegree": 5,
+      "total": 10
+    },
+    {
+      "slug": "seer",
+      "term": "SEER (Seasonal Energy Efficiency Ratio)",
+      "category": "energy",
+      "inDegree": 5,
+      "outDegree": 5,
+      "total": 10
+    },
+    {
+      "slug": "cop",
+      "term": "COP (Coefficient of Performance)",
+      "category": "energy",
+      "inDegree": 4,
+      "outDegree": 5,
+      "total": 9
+    }
+  ],
+  "authorities": [
+    {
+      "domain": "bea.gov",
+      "count": 15,
+      "citingSlugs": [
+        "affordability-score",
+        "cost-of-living-index",
+        "inflation",
+        "nominal-vs-real",
+        "pce-price-index",
+        "per-capita-personal-income",
+        "personal-consumption-expenditures",
+        "purchasing-power",
+        "real-personal-income",
+        "real-wage-equivalent",
+        "regional-price-parity",
+        "rpp-all-items",
+        "rpp-goods",
+        "rpp-other-services",
+        "rpp-utilities"
+      ]
+    },
+    {
+      "domain": "huduser.gov",
+      "count": 11,
+      "citingSlugs": [
+        "affordability-score",
+        "ami-tier-50",
+        "ami-tier-80",
+        "area-median-income",
+        "cost-burdened-renter",
+        "fair-market-rent",
+        "housing-cost-to-income-ratio",
+        "hud-income-limits",
+        "lihtc",
+        "rpp-housing",
+        "severely-cost-burdened"
+      ]
+    },
+    {
+      "domain": "census.gov",
+      "count": 7,
+      "citingSlugs": [
+        "american-community-survey",
+        "census-tract",
+        "five-year-estimate",
+        "householder",
+        "margin-of-error",
+        "msa",
+        "one-year-estimate"
+      ]
+    },
+    {
+      "domain": "api.census.gov",
+      "count": 5,
+      "citingSlugs": [
+        "cost-burdened-renter",
+        "median-home-value",
+        "median-household-income",
+        "median-rent",
+        "quintile"
+      ]
+    },
+    {
+      "domain": "energy.gov",
+      "count": 5,
+      "citingSlugs": [
+        "afue",
+        "cop",
+        "eer",
+        "heating-degree-day",
+        "seer"
+      ]
+    },
+    {
+      "domain": "apps.bea.gov",
+      "count": 3,
+      "citingSlugs": [
+        "geofips",
+        "regional-price-parity",
+        "rpp-housing"
+      ]
+    },
+    {
+      "domain": "eia.gov",
+      "count": 3,
+      "citingSlugs": [
+        "btu",
+        "kwh",
+        "rpp-utilities"
+      ]
+    },
+    {
+      "domain": "ncei.noaa.gov",
+      "count": 2,
+      "citingSlugs": [
+        "cooling-degree-day",
+        "heating-degree-day"
+      ]
+    },
+    {
+      "domain": "bls.gov",
+      "count": 1,
+      "citingSlugs": [
+        "inflation"
+      ]
+    },
+    {
+      "domain": "clevelandfed.org",
+      "count": 1,
+      "citingSlugs": [
+        "cpi-vs-pce"
+      ]
+    },
+    {
+      "domain": "fred.stlouisfed.org",
+      "count": 1,
+      "citingSlugs": [
+        "pce-price-index"
+      ]
+    },
+    {
+      "domain": "furmancenter.org",
+      "count": 1,
+      "citingSlugs": [
+        "price-to-rent-ratio"
+      ]
+    },
+    {
+      "domain": "hud.gov",
+      "count": 1,
+      "citingSlugs": [
+        "section-8-voucher"
+      ]
+    },
+    {
+      "domain": "livingwage.mit.edu",
+      "count": 1,
+      "citingSlugs": [
+        "living-wage"
+      ]
+    },
+    {
+      "domain": "selfsufficiencystandard.org",
+      "count": 1,
+      "citingSlugs": [
+        "self-sufficiency-standard"
+      ]
+    }
+  ],
+  "on_site_references": {
+    "regional-price-parity": [
+      "/cities/[slug]",
+      "/state/[slug]",
+      "/equivalent/[pair]",
+      "/trend/"
+    ],
+    "rpp-all-items": [
+      "/cities/[slug]",
+      "/state/[slug]"
+    ],
+    "rpp-goods": [
+      "/cities/[slug]",
+      "/state/[slug]"
+    ],
+    "rpp-housing": [
+      "/cities/[slug]/utility-bill",
+      "/state/[slug]"
+    ],
+    "rpp-utilities": [
+      "/cities/[slug]/utility-bill"
+    ],
+    "rpp-other-services": [
+      "/cities/[slug]"
+    ],
+    "pce-price-index": [
+      "/trend/",
+      "/cities/[slug]"
+    ],
+    "msa": [
+      "/cities/[slug]",
+      "/state/[slug]"
+    ],
+    "geofips": [
+      "/sources/"
+    ],
+    "per-capita-personal-income": [
+      "/cities/[slug]",
+      "/state/[slug]"
+    ],
+    "real-personal-income": [
+      "/cities/[slug]",
+      "/state/[slug]",
+      "/equivalent/[pair]"
+    ],
+    "median-household-income": [
+      "/cities/[slug]",
+      "/state/[slug]"
+    ],
+    "median-rent": [
+      "/cities/[slug]",
+      "/state/[slug]",
+      "/cities/[slug]/utility-bill"
+    ],
+    "median-home-value": [
+      "/cities/[slug]",
+      "/state/[slug]"
+    ],
+    "fair-market-rent": [
+      "/cities/[slug]",
+      "/state/[slug]"
+    ],
+    "area-median-income": [
+      "/cities/[slug]",
+      "/state/[slug]"
+    ],
+    "cost-burdened-renter": [
+      "/cities/[slug]"
+    ],
+    "severely-cost-burdened": [
+      "/cities/[slug]"
+    ],
+    "price-to-rent-ratio": [
+      "/cities/[slug]"
+    ],
+    "affordability-score": [
+      "/cities/[slug]",
+      "/state/[slug]"
+    ],
+    "real-wage-equivalent": [
+      "/equivalent/[pair]",
+      "/cities/[slug]"
+    ],
+    "inflation": [
+      "/trend/"
+    ],
+    "cpi-vs-pce": [
+      "/sources/"
+    ],
+    "nominal-vs-real": [
+      "/trend/",
+      "/cities/[slug]"
+    ],
+    "purchasing-power": [
+      "/equivalent/[pair]"
+    ],
+    "heating-degree-day": [
+      "/cities/[slug]/utility-bill"
+    ],
+    "cooling-degree-day": [
+      "/cities/[slug]/utility-bill"
+    ],
+    "kwh": [
+      "/cities/[slug]/utility-bill"
+    ],
+    "btu": [
+      "/cities/[slug]/utility-bill"
+    ],
+    "seer": [
+      "/cities/[slug]/utility-bill"
+    ],
+    "eer": [
+      "/cities/[slug]/utility-bill"
+    ],
+    "cop": [
+      "/cities/[slug]/utility-bill"
+    ],
+    "afue": [
+      "/cities/[slug]/utility-bill"
+    ]
+  },
+  "full_degree_table": [
+    {
+      "slug": "regional-price-parity",
+      "term": "Regional Price Parity (RPP)",
+      "category": "bea",
+      "inDegree": 15,
+      "outDegree": 5,
+      "total": 20
+    },
+    {
+      "slug": "cost-burdened-renter",
+      "term": "Cost-Burdened Renter",
+      "category": "census",
+      "inDegree": 11,
+      "outDegree": 5,
+      "total": 16
+    },
+    {
+      "slug": "american-community-survey",
+      "term": "American Community Survey (ACS)",
+      "category": "census",
+      "inDegree": 8,
+      "outDegree": 5,
+      "total": 13
+    },
+    {
+      "slug": "area-median-income",
+      "term": "Area Median Income (AMI)",
+      "category": "hud",
+      "inDegree": 8,
+      "outDegree": 5,
+      "total": 13
+    },
+    {
+      "slug": "median-rent",
+      "term": "Median Gross Rent",
+      "category": "census",
+      "inDegree": 9,
+      "outDegree": 4,
+      "total": 13
+    },
+    {
+      "slug": "median-household-income",
+      "term": "Median Household Income",
+      "category": "census",
+      "inDegree": 9,
+      "outDegree": 4,
+      "total": 13
+    },
+    {
+      "slug": "affordability-score",
+      "term": "Affordability Score",
+      "category": "general",
+      "inDegree": 7,
+      "outDegree": 5,
+      "total": 12
+    },
+    {
+      "slug": "fair-market-rent",
+      "term": "Fair Market Rent (FMR)",
+      "category": "hud",
+      "inDegree": 7,
+      "outDegree": 5,
+      "total": 12
+    },
+    {
+      "slug": "pce-price-index",
+      "term": "PCE Price Index",
+      "category": "bea",
+      "inDegree": 7,
+      "outDegree": 5,
+      "total": 12
+    },
+    {
+      "slug": "btu",
+      "term": "British Thermal Unit (BTU)",
+      "category": "energy",
+      "inDegree": 7,
+      "outDegree": 4,
+      "total": 11
+    },
+    {
+      "slug": "kwh",
+      "term": "Kilowatt-Hour (kWh)",
+      "category": "energy",
+      "inDegree": 7,
+      "outDegree": 4,
+      "total": 11
+    },
+    {
+      "slug": "real-personal-income",
+      "term": "Real Personal Income (RPCPI)",
+      "category": "bea",
+      "inDegree": 7,
+      "outDegree": 4,
+      "total": 11
+    },
+    {
+      "slug": "rpp-housing",
+      "term": "RPP: Housing",
+      "category": "bea",
+      "inDegree": 5,
+      "outDegree": 5,
+      "total": 10
+    },
+    {
+      "slug": "seer",
+      "term": "SEER (Seasonal Energy Efficiency Ratio)",
+      "category": "energy",
+      "inDegree": 5,
+      "outDegree": 5,
+      "total": 10
+    },
+    {
+      "slug": "cop",
+      "term": "COP (Coefficient of Performance)",
+      "category": "energy",
+      "inDegree": 4,
+      "outDegree": 5,
+      "total": 9
+    },
+    {
+      "slug": "rpp-all-items",
+      "term": "RPP: All Items",
+      "category": "bea",
+      "inDegree": 4,
+      "outDegree": 5,
+      "total": 9
+    },
+    {
+      "slug": "ami-tier-50",
+      "term": "50% AMI Tier",
+      "category": "hud",
+      "inDegree": 4,
+      "outDegree": 4,
+      "total": 8
+    },
+    {
+      "slug": "ami-tier-80",
+      "term": "80% AMI Tier",
+      "category": "hud",
+      "inDegree": 4,
+      "outDegree": 4,
+      "total": 8
+    },
+    {
+      "slug": "cooling-degree-day",
+      "term": "Cooling Degree Day (CDD)",
+      "category": "energy",
+      "inDegree": 4,
+      "outDegree": 4,
+      "total": 8
+    },
+    {
+      "slug": "heating-degree-day",
+      "term": "Heating Degree Day (HDD)",
+      "category": "energy",
+      "inDegree": 3,
+      "outDegree": 4,
+      "total": 7
+    },
+    {
+      "slug": "inflation",
+      "term": "Inflation",
+      "category": "general",
+      "inDegree": 3,
+      "outDegree": 4,
+      "total": 7
+    },
+    {
+      "slug": "lihtc",
+      "term": "Low-Income Housing Tax Credit (LIHTC)",
+      "category": "hud",
+      "inDegree": 3,
+      "outDegree": 4,
+      "total": 7
+    },
+    {
+      "slug": "purchasing-power",
+      "term": "Purchasing Power",
+      "category": "general",
+      "inDegree": 3,
+      "outDegree": 4,
+      "total": 7
+    },
+    {
+      "slug": "real-wage-equivalent",
+      "term": "Real-Wage Equivalent",
+      "category": "general",
+      "inDegree": 3,
+      "outDegree": 4,
+      "total": 7
+    },
+    {
+      "slug": "rpp-utilities",
+      "term": "RPP: Utilities",
+      "category": "bea",
+      "inDegree": 3,
+      "outDegree": 4,
+      "total": 7
+    },
+    {
+      "slug": "five-year-estimate",
+      "term": "ACS 5-Year Estimate",
+      "category": "census",
+      "inDegree": 3,
+      "outDegree": 3,
+      "total": 6
+    },
+    {
+      "slug": "afue",
+      "term": "AFUE (Annual Fuel Utilization Efficiency)",
+      "category": "energy",
+      "inDegree": 2,
+      "outDegree": 4,
+      "total": 6
+    },
+    {
+      "slug": "section-8-voucher",
+      "term": "Housing Choice Voucher (Section 8)",
+      "category": "hud",
+      "inDegree": 3,
+      "outDegree": 3,
+      "total": 6
+    },
+    {
+      "slug": "hud-income-limits",
+      "term": "HUD Income Limits",
+      "category": "hud",
+      "inDegree": 2,
+      "outDegree": 4,
+      "total": 6
+    },
+    {
+      "slug": "msa",
+      "term": "Metropolitan Statistical Area (MSA)",
+      "category": "bea",
+      "inDegree": 3,
+      "outDegree": 3,
+      "total": 6
+    },
+    {
+      "slug": "nominal-vs-real",
+      "term": "Nominal vs Real",
+      "category": "general",
+      "inDegree": 2,
+      "outDegree": 4,
+      "total": 6
+    },
+    {
+      "slug": "cpi-vs-pce",
+      "term": "CPI vs PCE",
+      "category": "general",
+      "inDegree": 3,
+      "outDegree": 2,
+      "total": 5
+    },
+    {
+      "slug": "eer",
+      "term": "EER (Energy Efficiency Ratio)",
+      "category": "energy",
+      "inDegree": 2,
+      "outDegree": 3,
+      "total": 5
+    },
+    {
+      "slug": "housing-cost-to-income-ratio",
+      "term": "Housing-Cost-to-Income Ratio",
+      "category": "hud",
+      "inDegree": 0,
+      "outDegree": 5,
+      "total": 5
+    },
+    {
+      "slug": "margin-of-error",
+      "term": "Margin of Error (MOE)",
+      "category": "census",
+      "inDegree": 3,
+      "outDegree": 2,
+      "total": 5
+    },
+    {
+      "slug": "median-home-value",
+      "term": "Median Home Value",
+      "category": "census",
+      "inDegree": 2,
+      "outDegree": 3,
+      "total": 5
+    },
+    {
+      "slug": "rpp-goods",
+      "term": "RPP: Goods",
+      "category": "bea",
+      "inDegree": 2,
+      "outDegree": 3,
+      "total": 5
+    },
+    {
+      "slug": "rpp-other-services",
+      "term": "RPP: Other Services",
+      "category": "bea",
+      "inDegree": 1,
+      "outDegree": 4,
+      "total": 5
+    },
+    {
+      "slug": "severely-cost-burdened",
+      "term": "Severely Cost-Burdened",
+      "category": "hud",
+      "inDegree": 2,
+      "outDegree": 3,
+      "total": 5
+    },
+    {
+      "slug": "one-year-estimate",
+      "term": "ACS 1-Year Estimate",
+      "category": "census",
+      "inDegree": 1,
+      "outDegree": 3,
+      "total": 4
+    },
+    {
+      "slug": "living-wage",
+      "term": "Living Wage",
+      "category": "general",
+      "inDegree": 1,
+      "outDegree": 3,
+      "total": 4
+    },
+    {
+      "slug": "per-capita-personal-income",
+      "term": "Per Capita Personal Income (PCPI)",
+      "category": "bea",
+      "inDegree": 1,
+      "outDegree": 3,
+      "total": 4
+    },
+    {
+      "slug": "price-to-rent-ratio",
+      "term": "Price-to-Rent Ratio",
+      "category": "hud",
+      "inDegree": 1,
+      "outDegree": 3,
+      "total": 4
+    },
+    {
+      "slug": "self-sufficiency-standard",
+      "term": "Self-Sufficiency Standard",
+      "category": "general",
+      "inDegree": 1,
+      "outDegree": 3,
+      "total": 4
+    },
+    {
+      "slug": "census-tract",
+      "term": "Census Tract",
+      "category": "census",
+      "inDegree": 1,
+      "outDegree": 2,
+      "total": 3
+    },
+    {
+      "slug": "cost-of-living-index",
+      "term": "Cost of Living Index",
+      "category": "general",
+      "inDegree": 0,
+      "outDegree": 3,
+      "total": 3
+    },
+    {
+      "slug": "geofips",
+      "term": "GeoFIPS Code",
+      "category": "bea",
+      "inDegree": 1,
+      "outDegree": 2,
+      "total": 3
+    },
+    {
+      "slug": "quintile",
+      "term": "Income Quintile",
+      "category": "general",
+      "inDegree": 0,
+      "outDegree": 3,
+      "total": 3
+    },
+    {
+      "slug": "personal-consumption-expenditures",
+      "term": "Personal Consumption Expenditures (PCE)",
+      "category": "bea",
+      "inDegree": 0,
+      "outDegree": 3,
+      "total": 3
+    },
+    {
+      "slug": "householder",
+      "term": "Householder",
+      "category": "census",
+      "inDegree": 0,
+      "outDegree": 2,
+      "total": 2
+    }
+  ]
+}
